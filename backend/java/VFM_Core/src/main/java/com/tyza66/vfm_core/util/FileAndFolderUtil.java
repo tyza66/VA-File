@@ -56,7 +56,7 @@ public class FileAndFolderUtil {
         }
         return false;
     }
-    
+
     //判断文件是否存在
     //这个方法用在将打开文件或者打开文件遇到问题的时候 判断是否是因为文件因某些原因出现不存在的现象 好及时做出反馈
     public static boolean fileExists(String path) {
