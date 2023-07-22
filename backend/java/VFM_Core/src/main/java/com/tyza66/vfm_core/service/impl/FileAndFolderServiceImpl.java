@@ -38,7 +38,17 @@ public class FileAndFolderServiceImpl implements FileAndFolderService {
         if(path.endsWith("/")){
             path = path.substring(0,path.length()-1);
         }
-        return fileAndFolderUtil.getFolderContent(path);
+        return FileAndFolderUtil.getFolderContent(path);
+    }
+
+    @Override
+    public boolean deleteFile(String path) {
+        return FileAndFolderUtil.deleteFile(path);
+    }
+
+    @Override
+    public boolean deleteFolder(String path) {
+        return FileAndFolderUtil.deleteFolder(path);
     }
 
 

@@ -74,4 +74,49 @@ public class FileAndFolderController {
         }
         return obj;
     }
+
+    //传入一个树根下面的路径，并且前缀没有/
+    @ApiOperation("删除文件")
+    @GetMapping("/deleteFile")
+    public JSON deleteFile(@RequestParam(defaultValue = "") String partPath){
+        JSONObject obj = JSONUtil.createObj();
+        if(StpUtil.isLogin()){
+            //获得文件夹树根 并且这个树根后面没有/
+            String baseLocation = vfmLocationService.getNowLocation();
+            boolean b = fileAndFolderService.deleteFile(baseLocation + "/" + partPath);
+            if(b){
+                obj.set("code",200);
+                obj.set("msg","删除成功");
+            }else{
+                obj.set("code",199);
+                obj.set("msg","删除失败");
+            }
+        }else {
+            obj.set("code",201);
+            obj.set("msg","未登录");
+        }
+        return obj;
+    }
+
+    @ApiOperation("删除文件夹")
+    @GetMapping("/deleteFolder")
+    public JSON deleteFolder(@RequestParam(defaultValue = "") String partPath){
+        JSONObject obj = JSONUtil.createObj();
+        if(StpUtil.isLogin()){
+            //获得文件夹树根 并且这个树根后面没有/
+            String baseLocation = vfmLocationService.getNowLocation();
+            boolean b = fileAndFolderService.deleteFolder(baseLocation + "/" + partPath);
+            if(b){
+                obj.set("code",200);
+                obj.set("msg","删除成功");
+            }else{
+                obj.set("code",199);
+                obj.set("msg","删除失败");
+            }
+        }else {
+            obj.set("code",201);
+            obj.set("msg","未登录");
+        }
+        return obj;
+    }
 }

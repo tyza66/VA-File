@@ -20,4 +20,10 @@ public interface FileAndFolderService {
 
     //获得文件夹下的文件和文件夹列表
     List<FileAndFolder> obtainFileAndFolderList(String path);
+
+    //删除指定的文件
+    boolean deleteFile(String path);
+
+    //删除指定的文件夹
+    boolean deleteFolder(String path);
 }
