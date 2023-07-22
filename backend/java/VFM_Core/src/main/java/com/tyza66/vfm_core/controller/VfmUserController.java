@@ -53,4 +53,24 @@ public class VfmUserController {
         obj.set("msg", "退出成功");
         return obj;
     }
+
+    @ApiOperation("用户注册")
+    @PostMapping("/register")
+    public JSON register(@RequestBody VfmUser user) {
+        JSONObject obj = JSONUtil.createObj();
+        if(StpUtil.isLogin()){
+            Boolean user1 = vfmUserServer.register(user.getVfmuUsername(), user.getVfmuPassword(), (VfmUser) StpUtil.getSession().get("user"));
+            if (user1){
+                obj.set("code", 200);
+                obj.set("msg", "注册成功");
+            }else{
+                obj.set("code", 199);
+                obj.set("msg", "注册失败");
+            }
+        }else{
+            obj.set("code", 201);
+            obj.set("msg", "请先登录");
+        }
+        return obj;
+    }
 }

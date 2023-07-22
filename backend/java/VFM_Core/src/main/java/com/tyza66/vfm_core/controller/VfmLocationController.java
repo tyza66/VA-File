@@ -41,7 +41,7 @@ public class VfmLocationController {
                 obj.set("data", nowLocation);
             }
         } else {
-            obj.set("code", 199);
+            obj.set("code", 201);
             obj.set("msg", "未登录");
         }
         return obj;

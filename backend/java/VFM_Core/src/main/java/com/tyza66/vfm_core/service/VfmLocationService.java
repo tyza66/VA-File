@@ -7,5 +7,6 @@ package com.tyza66.vfm_core.service;
  **/
 
 public interface VfmLocationService {
+    //获取当前的根文件夹位置
     String getNowLocation();
 }

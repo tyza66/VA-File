@@ -10,5 +10,9 @@ import com.tyza66.vfm_core.pojo.VfmUser;
 
 public interface VfmUserServer {
 
+    //使用账号密码验证登录
     VfmUser login(String username, String password);
+
+    //已经登录的用户通过设置添加其他用户
+    Boolean register(String username,String password,VfmUser vfmUser);
 }

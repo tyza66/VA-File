@@ -1,5 +1,6 @@
 package com.tyza66.vfm_core.service.impl;
 
+import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tyza66.vfm_core.mapper.VfmUserMapper;
@@ -27,5 +28,24 @@ public class VfmUserServerImpl extends ServiceImpl<VfmUserMapper, VfmUser> imple
             return null;
         }
         return vfmUsers.get(0);
+    }
+
+    @Override
+    public Boolean register(String username, String password,VfmUser vfmUser){
+        QueryWrapper<VfmUser> vfmUserQueryWrapper = new QueryWrapper<>();
+        vfmUserQueryWrapper.eq("vfmu_username", username);
+        List<VfmUser> vfmUsers = baseMapper.selectList(vfmUserQueryWrapper);
+        if(vfmUsers.size()>0){
+            return false;
+        }
+        UUID uuid = UUID.fastUUID();
+        VfmUser vfmUser1 = new VfmUser(0, uuid.toString(), username, password,
+                vfmUser.getCreateUserId(), vfmUser.getCreateUserId(),
+                "SYSTEM", "SYSTEM",
+                false);
+        if(baseMapper.insert(vfmUser1)>0){
+            return true;
+        }
+        return false;
     }
 }
