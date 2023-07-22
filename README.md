@@ -36,7 +36,7 @@
 
 ##### 后端程序
 - 环境：Java8、MySQL、Redis、Docker、Redis
-- Java后端使用技术：Spring、Spring Boot、MyBatis、MyBatis Plus、Knife4j、Hutool、Sa-Token
+- Java后端使用技术：Spring、Spring Boot、MyBatis、MyBatis Plus、Knife4j、Hutool、Sa-Token、Lettuce
 - Python后端使用技术：FastAPI、HuggingFace、PyTorch
 
 ##### 前端程序
