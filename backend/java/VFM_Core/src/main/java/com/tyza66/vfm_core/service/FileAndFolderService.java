@@ -1,6 +1,9 @@
 package com.tyza66.vfm_core.service;
 
+import com.tyza66.vfm_core.pojo.FileAndFolder;
 import com.tyza66.vfm_core.pojo.VfmUser;
+
+import java.util.List;
 
 /**
  * Author: tyza66
@@ -14,4 +17,7 @@ public interface FileAndFolderService {
 
     //修改当前文件树根位置
     Boolean setLocation(String location, VfmUser vfmUser);
+
+    //获得文件夹下的文件和文件夹列表
+    List<FileAndFolder> obtainFileAndFolderList(String path);
 }

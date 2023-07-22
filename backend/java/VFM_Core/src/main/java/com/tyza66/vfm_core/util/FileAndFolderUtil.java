@@ -80,16 +80,21 @@ public class FileAndFolderUtil {
     //获取当前文件夹中的所有文件和文件夹
     public List<FileAndFolder> getFolderContent(String path) {
         List<FileAndFolder> fileAndFolders = new ArrayList<>();
-        if(folderExists(path)){
+        //如果文件夹不存在，直接返回空的list
+        if(!folderExists(path)){
             return fileAndFolders;
         }
         File file = new File(path);
         File[] files = file.listFiles();
         for (File fileIn : files) {
             String name = fileIn.getName();
-            String end = name.substring(name.lastIndexOf(".") + 1);
-            name = name.substring(0, name.lastIndexOf("."));
+            String end = "";
             String size = String.valueOf(fileIn.length());
+            if(fileIn.isFile()) {
+                end = name.substring(name.lastIndexOf(".") + 1);
+                name = name.substring(0, name.lastIndexOf("."));
+                size = String.valueOf(fileIn.length());
+            }
             String type = fileIn.isFile() ? "file" : "folder";
             FileAndFolder fileAndFolder = new FileAndFolder(name,end,size,type,fileIn);
             fileAndFolders.add(fileAndFolder);
