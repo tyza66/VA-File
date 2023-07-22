@@ -1,10 +1,14 @@
 package com.tyza66.vfm_core.util;
 
+import ch.qos.logback.classic.spi.EventArgUtil;
+import com.tyza66.vfm_core.pojo.FileAndFolder;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author: tyza66
@@ -15,7 +19,7 @@ import java.io.File;
 @Component
 @Scope(ConfigurableListableBeanFactory.SCOPE_SINGLETON)
 public class FileAndFolderUtil {
-//静态成员变量
+//成员变量
 
 
 //静态方法
@@ -71,6 +75,26 @@ public class FileAndFolderUtil {
             return true;
         }
         return false;
+    }
+
+    //获取当前文件夹中的所有文件和文件夹
+    public List<FileAndFolder> getFolderContent(String path) {
+        List<FileAndFolder> fileAndFolders = new ArrayList<>();
+        if(folderExists(path)){
+            return fileAndFolders;
+        }
+        File file = new File(path);
+        File[] files = file.listFiles();
+        for (File fileIn : files) {
+            String name = fileIn.getName();
+            String end = name.substring(name.lastIndexOf(".") + 1);
+            name = name.substring(0, name.lastIndexOf("."));
+            String size = String.valueOf(fileIn.length());
+            String type = fileIn.isFile() ? "file" : "folder";
+            FileAndFolder fileAndFolder = new FileAndFolder(name,end,size,type,fileIn);
+            fileAndFolders.add(fileAndFolder);
+        }
+        return fileAndFolders;
     }
 
 //非静态方法
