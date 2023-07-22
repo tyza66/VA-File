@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VfmUser {
     Integer id;
-    String vfmuNameUuid;
+    String vfmuUserUuid;
     String vfmuUsername;
     String vfmuPassword;
     String createUserId;

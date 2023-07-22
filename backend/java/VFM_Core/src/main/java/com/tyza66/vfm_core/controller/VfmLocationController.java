@@ -1,5 +1,6 @@
 package com.tyza66.vfm_core.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Github: https://github.com/tyza66
  **/
 
-@Api(tags = "文件基本位置管理")
+@Api(tags = "文件基本位置管理模块")
 @RestController
 @RequestMapping("/location")
 public class VfmLocationController {
@@ -29,14 +30,19 @@ public class VfmLocationController {
     @GetMapping("/get")
     public JSON getNowLocation() {
         JSONObject obj = JSONUtil.createObj();
-        String nowLocation = vfmLocationService.getNowLocation();
-        if(nowLocation== null) {
-            obj.set("code",199);
-            obj.set("msg", "获取失败");
-        }else {
-            obj.set("code", 200);
-            obj.set("msg", "获取成功");
-            obj.set("data", nowLocation);
+        if (StpUtil.isLogin()) {
+            String nowLocation = vfmLocationService.getNowLocation();
+            if (nowLocation == null) {
+                obj.set("code", 199);
+                obj.set("msg", "获取失败");
+            } else {
+                obj.set("code", 200);
+                obj.set("msg", "获取成功");
+                obj.set("data", nowLocation);
+            }
+        } else {
+            obj.set("code", 199);
+            obj.set("msg", "未登录");
         }
         return obj;
     }
