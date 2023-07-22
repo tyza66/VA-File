@@ -22,7 +22,7 @@ public class FileAndFolderServiceImpl implements FileAndFolderService {
     private VfmLocationServiceImpl vfmLocationService;
 
     public Boolean locationIsExists() {
-        return FileAndFolderUtil.fileExists(vfmLocationService.getNowLocation());
+        return FileAndFolderUtil.folderExists(vfmLocationService.getNowLocation());
     }
 
     @Override
