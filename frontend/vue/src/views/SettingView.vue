@@ -1,37 +1,18 @@
 <template>
   <div>
-    <div class="header"><p>当前路径:{{nowPath}}</p></div>
+    <div class="header"></div>
   </div>
 </template>
-
-<style scoped>
-.header{
-  width: 100%;
-  height: 30px;
-  background-color: aliceblue;
-  line-height: 30px;
-}
-.header:hover{
-  background-color: #e6f7ff;
-}
-
-.header p{
-  margin-left: 10px;
-}
-</style>
 
 <script>
 import { request } from '@/utils/request';
 
 export default {
-  name: 'HomeView',
+  name: 'SettingView',
   components: {
-
   },
   data() {
     return {
-      basePath:"/",
-      nowPath:"/"
     }
   },
   created() {
