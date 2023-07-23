@@ -7,7 +7,7 @@
       <el-button size="small" type="link" @click="logout()">退出登录</el-button>
       <el-button size="small" type="link" @click="backRoom()">上级目录</el-button>
       <el-button size="small" type="link" @click="rootRoom()">回根目录</el-button>
-      <el-button size="small" type="link" @click="rootRoom()">上传文件</el-button>
+      <el-button size="small" type="link" @click="uploadFile()">上传文件</el-button>
       <el-button size="small" type="link" @click="createFile()">新建文件</el-button>
       <el-button size="small" type="link" @click="createFolder()">建文件夹</el-button>
       <el-button size="small" type="link" @click="reflash()">刷新当前</el-button>
@@ -48,6 +48,26 @@
         </div>
       </div>
     </div>
+    <el-dialog
+    v-model="uploadShow"
+    title="文件上传"
+    width="30%"
+    :before-close="handleClose"
+  >
+    <div>
+      上传路径：<input type="text" v-model="nowPath" disabled>
+      <br/>
+      选择文件：<input type="file" id="file" name="file">
+    </div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="uploadClose()">取消</el-button>
+        <el-button type="primary" @click="uplodatSubmit()">
+          提交
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
   </div>
 </template>
 
@@ -135,10 +155,14 @@
   display: inline-block;
   margin: 5px;
 }
+
+.dialog-footer button:first-child {
+  margin-right: 10px;
+}
 </style>
 
 <script>
-import { request } from '@/utils/request';
+import { request, ref } from '@/utils/request';
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default {
@@ -151,7 +175,8 @@ export default {
       user: null,
       basePath: "/",
       nowPath: "/",
-      context: []
+      context: [],
+      uploadShow: false
     }
   },
   created() {
@@ -495,25 +520,25 @@ export default {
         cancelButtonText: '取消',
       })
         .then(({ value }) => {
-          request.get("/file/createFolder",{
+          request.get("/file/createFolder", {
             params: {
-                "partPath": this.nowPath.substring(1) + value
-              },
-              headers: {
-                "satoken": this.getCookie("satoken")
-              }
-          }).then(res=>{
-            if(res.code == 201){
+              "partPath": this.nowPath.substring(1) + value
+            },
+            headers: {
+              "satoken": this.getCookie("satoken")
+            }
+          }).then(res => {
+            if (res.code == 201) {
               return
             }
-            if(res.code == 200){
+            if (res.code == 200) {
               ElMessage({
                 type: 'success',
                 message: `新建文件夹成功！名称为:${value}`,
               })
               this.reflash()
             }
-          }).catch(err=>{
+          }).catch(err => {
             console.log(err);
           })
         })
@@ -523,31 +548,31 @@ export default {
             message: '已取消创建文件夹',
           })
         })
-    },createFile(){
+    }, createFile() {
       ElMessageBox.prompt('请输入要新建文件的名称', '新建文件', {
         confirmButtonText: '创建',
         cancelButtonText: '取消',
       })
         .then(({ value }) => {
-          request.get("/file/createFile",{
+          request.get("/file/createFile", {
             params: {
-                "partPath": this.nowPath.substring(1) + value
-              },
-              headers: {
-                "satoken": this.getCookie("satoken")
-              }
-          }).then(res=>{
-            if(res.code == 201){
+              "partPath": this.nowPath.substring(1) + value
+            },
+            headers: {
+              "satoken": this.getCookie("satoken")
+            }
+          }).then(res => {
+            if (res.code == 201) {
               return
             }
-            if(res.code == 200){
+            if (res.code == 200) {
               ElMessage({
                 type: 'success',
                 message: `新建文件成功！名称为:${value}`,
               })
               this.reflash()
             }
-          }).catch(err=>{
+          }).catch(err => {
             console.log(err);
           })
         })
@@ -557,6 +582,50 @@ export default {
             message: '已取消创建文件',
           })
         })
+    }, uploadFile() {
+      this.uploadShow = true
+    }, handleClose() {
+      ElMessageBox.confirm('确定要关闭本窗口吗')
+        .then(() => {
+          this.uploadShow = false
+          done()
+        })
+        .catch(() => {
+          // catch error
+        })
+    },uploadClose(){
+      this.uploadShow = false;
+      ElMessage({
+            type: 'info',
+            message: '已取消上传文件',
+          })
+    },
+    uplodatSubmit(){
+      const file = document.querySelector('input[type=file]').files[0]
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('partPath', this.nowPath.substring(1))
+      request.post("/file/upload.action",formData,{
+        headers: {
+          "satoken": this.getCookie("satoken")
+        }
+      }).then(
+        res=>{
+          if (res.code == 201) {
+              return
+            }
+            if (res.code == 200) {
+              ElMessage({
+                type: 'success',
+                message: `上传文件成功！`,
+              })
+              this.reflash()
+              this.uploadShow = false;
+            }
+        }
+      ).catch(error => {
+        console.log(error);
+      })
     }
   }
 }

@@ -250,7 +250,7 @@ public class FileAndFolderController {
                 try {
                     String baseLocation = vfmLocationService.getNowLocation();
                     byte[] b = file.getBytes();
-                    FileOutputStream out = new FileOutputStream(baseLocation + "/" + partPath + "/" + file.getOriginalFilename());
+                    FileOutputStream out = new FileOutputStream(baseLocation + "/" + partPath  + file.getOriginalFilename());
                     out.write(b);
                     out.close();
                     obj.set("code", 200);
