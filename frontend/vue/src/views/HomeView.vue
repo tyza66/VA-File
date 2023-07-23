@@ -11,6 +11,7 @@
       <el-button size="small" type="link" @click="createFile()">新建文件</el-button>
       <el-button size="small" type="link" @click="createFolder()">建文件夹</el-button>
       <el-button size="small" type="link" @click="reflash()">刷新当前</el-button>
+      <el-button size="small" type="link" @click="search()">检索工具</el-button>
     </div>
     <div class="main">
       <div class="file-and-folder" v-for="(item, index) in context" :key="index">
@@ -626,6 +627,8 @@ export default {
       ).catch(error => {
         console.log(error);
       })
+    },search(){
+      this.$router.push('/search')
     }
   }
 }
