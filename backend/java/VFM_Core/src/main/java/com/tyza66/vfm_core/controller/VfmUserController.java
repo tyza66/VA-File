@@ -5,6 +5,7 @@ import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.tyza66.vfm_core.pojo.VfmUser;
+import com.tyza66.vfm_core.service.VfmUserServer;
 import com.tyza66.vfm_core.service.impl.VfmUserServerImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class VfmUserController {
 
     @Autowired
-    private VfmUserServerImpl vfmUserServer;
+    private VfmUserServer vfmUserServer;
 
     @ApiOperation("用户登录")
     @PostMapping("/login")

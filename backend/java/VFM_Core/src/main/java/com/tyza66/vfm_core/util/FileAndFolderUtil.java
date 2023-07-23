@@ -213,6 +213,38 @@ public class FileAndFolderUtil {
         return oldFile.renameTo(newFile);
     }
 
+    //通过关键字搜索文件夹中名称包含关键字的文件和文件夹
+    public static List<FileAndFolder> getFolderContent(String path,String key,List<FileAndFolder> fileAndFolders) {
+        //如果文件夹不存在，直接返回空的list
+        if (!folderExists(path)) {
+            return fileAndFolders;
+        }
+        File file = new File(path);
+        File[] files = file.listFiles();
+        for (File fileIn : files) {
+            //进行保存操作之前先判断当前文件或文件夹的名称中是否包含关键字
+            //有关键字的话才可以保存进去
+            if(fileIn.getName().contains(key)) {
+                String name = fileIn.getName();
+                String end = "";
+                String size = "0";
+                if (fileIn.isFile()) {
+                    end = name.substring(name.lastIndexOf(".") + 1);
+                    name = name.substring(0, name.lastIndexOf("."));
+                    size = String.valueOf(fileIn.length());
+                }
+                String type = fileIn.isFile() ? "file" : "folder";
+                FileAndFolder fileAndFolder = new FileAndFolder(name, end, size, type, fileIn);
+                fileAndFolders.add(fileAndFolder);
+            }
+            //如果是文件夹 就进入深层
+            if(fileIn.isDirectory()){
+                getFolderContent(fileIn.getAbsolutePath(),key,fileAndFolders);
+            }
+        }
+        return fileAndFolders;
+    }
+
 //非静态方法
 
 

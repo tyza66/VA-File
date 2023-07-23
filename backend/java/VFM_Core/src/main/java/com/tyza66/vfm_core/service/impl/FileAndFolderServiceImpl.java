@@ -17,8 +17,6 @@ import java.util.List;
 
 @Service
 public class FileAndFolderServiceImpl implements FileAndFolderService {
-    @Resource
-    private FileAndFolderUtil fileAndFolderUtil;
 
     @Resource
     private VfmLocationServiceImpl vfmLocationService;

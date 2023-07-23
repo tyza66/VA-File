@@ -5,6 +5,7 @@ import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.tyza66.vfm_core.pojo.FileAndFolder;
+import com.tyza66.vfm_core.service.VfmLocationService;
 import com.tyza66.vfm_core.service.impl.FileAndFolderServiceImpl;
 import com.tyza66.vfm_core.service.impl.VfmLocationServiceImpl;
 import com.tyza66.vfm_core.util.FileAndFolderUtil;
@@ -42,7 +43,7 @@ import java.util.List;
 public class FileAndFolderController {
 
     @Autowired
-    private VfmLocationServiceImpl vfmLocationService;
+    private VfmLocationService vfmLocationService;
 
     @Autowired
     private FileAndFolderServiceImpl fileAndFolderService;
