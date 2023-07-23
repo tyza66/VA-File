@@ -8,7 +8,8 @@
       <el-button size="small" type="link" @click="backRoom()">上级目录</el-button>
       <el-button size="small" type="link" @click="rootRoom()">回根目录</el-button>
       <el-button size="small" type="link" @click="rootRoom()">上传文件</el-button>
-      <el-button size="small" type="link" @click="rootRoom()">新建文件</el-button>
+      <el-button size="small" type="link" @click="createFile()">新建文件</el-button>
+      <el-button size="small" type="link" @click="createFolder()">建文件夹</el-button>
       <el-button size="small" type="link" @click="reflash()">刷新当前</el-button>
     </div>
     <div class="main">
@@ -37,7 +38,8 @@
           <el-button size="small" link type="default" v-show="item.type == 'folder'"
             @click="openFolder(item.name)">打开</el-button>
           <el-button size="small" link type="default" v-show="item.type == 'file'">预览</el-button>
-          <el-button size="small" link type="default" v-show="item.type != 'folder'">下载</el-button>
+          <el-button size="small" link type="default" v-show="item.type != 'folder'"
+            @click="download(item.name + '.' + item.end)">下载</el-button>
           <el-button size="small" link type="default" disabled v-show="item.type == 'folder'">下载</el-button>
           <el-button size="small" link type="default"
             @click="delete1((item.type == 'folder') ? (item.name) : (item.name + '.' + item.end), item.type)">删除</el-button>
@@ -261,6 +263,10 @@ export default {
     rootRoom() {
       this.nowPath = "/"
       this.getRootContext()
+      ElMessage({
+        message: '回到根目录成功',
+        type: 'success'
+      })
     },
     getRootContext() {
       var that = this
@@ -408,13 +414,17 @@ export default {
         if (res.code == 200) {
           that.context = res.data
           this.sortContent("type")
+          ElMessage({
+            message: '已刷新当前目录',
+            type: 'success'
+          })
         }
       }).catch(err => {
         console.log(err);
       })
     },
     rename(name, type) {
-      console.log(name, type);
+      //console.log(name, type);
       ElMessageBox.prompt('请输入文件/文件夹新的名称', '重命名', {
         confirmButtonText: '重命名',
         cancelButtonText: '取消',
@@ -443,7 +453,7 @@ export default {
             }).catch(err => {
               console.log(err);
             })
-          }else if(type=="folder"){
+          } else if (type == "folder") {
             request.get("/file/renameFolder", {
               params: {
                 "partPath": this.nowPath.substring(1) + name,
@@ -473,6 +483,78 @@ export default {
           ElMessage({
             type: 'info',
             message: '已取消重命名',
+          })
+        })
+    }, download(name) {
+      var path = "http://localhost:9090/file/download.action?partPath=" + this.nowPath.substring(1) + name
+      //console.log(path);
+      window.open(path)
+    }, createFolder() {
+      ElMessageBox.prompt('请输入要新建文件夹的名称', '新建文件夹', {
+        confirmButtonText: '创建',
+        cancelButtonText: '取消',
+      })
+        .then(({ value }) => {
+          request.get("/file/createFolder",{
+            params: {
+                "partPath": this.nowPath.substring(1) + value
+              },
+              headers: {
+                "satoken": this.getCookie("satoken")
+              }
+          }).then(res=>{
+            if(res.code == 201){
+              return
+            }
+            if(res.code == 200){
+              ElMessage({
+                type: 'success',
+                message: `新建文件夹成功！名称为:${value}`,
+              })
+              this.reflash()
+            }
+          }).catch(err=>{
+            console.log(err);
+          })
+        })
+        .catch(() => {
+          ElMessage({
+            type: 'info',
+            message: '已取消创建文件夹',
+          })
+        })
+    },createFile(){
+      ElMessageBox.prompt('请输入要新建文件的名称', '新建文件', {
+        confirmButtonText: '创建',
+        cancelButtonText: '取消',
+      })
+        .then(({ value }) => {
+          request.get("/file/createFile",{
+            params: {
+                "partPath": this.nowPath.substring(1) + value
+              },
+              headers: {
+                "satoken": this.getCookie("satoken")
+              }
+          }).then(res=>{
+            if(res.code == 201){
+              return
+            }
+            if(res.code == 200){
+              ElMessage({
+                type: 'success',
+                message: `新建文件成功！名称为:${value}`,
+              })
+              this.reflash()
+            }
+          }).catch(err=>{
+            console.log(err);
+          })
+        })
+        .catch(() => {
+          ElMessage({
+            type: 'info',
+            message: '已取消创建文件',
           })
         })
     }

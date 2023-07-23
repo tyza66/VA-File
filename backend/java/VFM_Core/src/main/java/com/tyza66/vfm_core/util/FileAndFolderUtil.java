@@ -54,6 +54,11 @@ public class FileAndFolderUtil {
         return sb.toString();
     }
 
+    //获得文件后缀名
+    public static String getFileSuffix(String path) {
+        return path.substring(path.lastIndexOf(".") + 1);
+    }
+
     //判断地址指向的位置是否是文件夹，并判断这个文件夹是存在
     //这个方法用在用户初打开工具的时候，还有手动更改文件树根位置的时候判断是否存在和是不是文件夹
     public static boolean folderExists(String path) {

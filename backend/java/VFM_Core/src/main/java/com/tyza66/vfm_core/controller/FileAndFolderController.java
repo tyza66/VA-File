@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.tyza66.vfm_core.pojo.FileAndFolder;
 import com.tyza66.vfm_core.service.impl.FileAndFolderServiceImpl;
 import com.tyza66.vfm_core.service.impl.VfmLocationServiceImpl;
+import com.tyza66.vfm_core.util.FileAndFolderUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -26,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -135,7 +137,7 @@ public class FileAndFolderController {
     //传入的基于树根以下的路径
     @ApiOperation("新建指定路径文件夹")
     @GetMapping("/createFolder")
-    public JSON createFolder(@RequestParam(defaultValue = "") String partPath) {
+    public JSON createFolder(@RequestParam(required = true) String partPath) {
         JSONObject obj = JSONUtil.createObj();
         if (StpUtil.isLogin()) {
             //获得文件夹树根 并且这个树根后面没有/
@@ -158,7 +160,7 @@ public class FileAndFolderController {
     //传入的基于树根以下的路径
     @ApiOperation("创建指定路径文件")
     @GetMapping("/createFile")
-    public JSON createFile(@RequestParam(defaultValue = "") String partPath) {
+    public JSON createFile(@RequestParam(required = true) String partPath) {
         JSONObject obj = JSONUtil.createObj();
         if (StpUtil.isLogin()) {
             //获得文件夹树根 并且这个树根后面没有/
@@ -228,32 +230,27 @@ public class FileAndFolderController {
 
     @ApiOperation("下载文件")
     @GetMapping("/download.action")
-    public ResponseEntity<byte[]> download(@RequestParam String path) throws IOException {
+    public ResponseEntity<byte[]> download(@RequestParam String partPath) throws IOException {
         HttpHeaders headers = new HttpHeaders();
-        String filename = new String(path.getBytes("iso-8859-1"), "utf-8");//为了解决中文名称乱码问题
+        String filename = String.valueOf(new Date().getTime()) + "." + FileAndFolderUtil.getFileSuffix(partPath);
         String baseLocation = vfmLocationService.getNowLocation();
-        File file = new File(baseLocation + "/" + path);
+        File file = new File(baseLocation + "/" + partPath);
         headers.setContentDispositionFormData("attachment", filename);//不自动打开
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);   //头文件内容类型
-        //如果用户未登录 直接返回空文件
-        if (StpUtil.isLogin()) {
-            return new ResponseEntity<byte[]>("".getBytes(),
-                    headers, HttpStatus.CREATED);
-        }
         return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),
                 headers, HttpStatus.CREATED);
     }
 
     @ApiOperation("上传文件")
     @PostMapping("/upload.action")
-    public JSON upload(MultipartFile file, String path) {
+    public JSON upload(MultipartFile file, String partPath) {
         JSONObject obj = JSONUtil.createObj();
         if (StpUtil.isLogin()) {
             if (file != null && !file.isEmpty()) {
                 try {
                     String baseLocation = vfmLocationService.getNowLocation();
                     byte[] b = file.getBytes();
-                    FileOutputStream out = new FileOutputStream(baseLocation + "/" + path + "/" + file.getOriginalFilename());
+                    FileOutputStream out = new FileOutputStream(baseLocation + "/" + partPath + "/" + file.getOriginalFilename());
                     out.write(b);
                     out.close();
                     obj.set("code", 200);
