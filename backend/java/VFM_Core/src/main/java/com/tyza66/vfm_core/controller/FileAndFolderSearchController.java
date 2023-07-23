@@ -37,20 +37,42 @@ public class FileAndFolderSearchController {
 
     @ApiOperation("按名称搜索文件和文件夹")
     @GetMapping("/byName")
-    public JSON searchByName(@RequestParam String name) {
+    public JSON searchByName(@RequestParam(defaultValue = "") String partPath, @RequestParam String key) {
         JSONObject obj = JSONUtil.createObj();
-        if (StpUtil.isLogin()){
+        if (StpUtil.isLogin()) {
             String nowLocation = vfmLocationService.getNowLocation();
             if (nowLocation == null) {
                 obj.set("code", 199);
                 obj.set("msg", "获取失败");
             } else {
-                List<FileAndFolder> fileAndFolders = fileAndFolderSearchService.searchFileAndFolderByName(nowLocation, name);
+                List<FileAndFolder> fileAndFolders = fileAndFolderSearchService.searchFileAndFolderByName(nowLocation + "/" + partPath, key);
                 obj.set("code", 200);
                 obj.set("msg", "获取成功");
                 obj.set("data", fileAndFolders);
             }
-        }else{
+        } else {
+            obj.set("code", 201);
+            obj.set("msg", "未登录");
+        }
+        return obj;
+    }
+
+    @ApiOperation("按内容搜索文件")
+    @GetMapping("/byContent")
+    public JSON searchByContent(@RequestParam(defaultValue = "") String partPath, @RequestParam String key) {
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            String nowLocation = vfmLocationService.getNowLocation();
+            if (nowLocation == null) {
+                obj.set("code", 199);
+                obj.set("msg", "获取失败");
+            } else {
+                List<FileAndFolder> fileAndFolders = fileAndFolderSearchService.searchFileAndFolderByContent(nowLocation + "/" + partPath, key);
+                obj.set("code", 200);
+                obj.set("msg", "获取成功");
+                obj.set("data", fileAndFolders);
+            }
+        } else {
             obj.set("code", 201);
             obj.set("msg", "未登录");
         }

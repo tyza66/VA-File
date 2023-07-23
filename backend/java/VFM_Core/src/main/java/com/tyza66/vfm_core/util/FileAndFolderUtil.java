@@ -265,25 +265,61 @@ public class FileAndFolderUtil {
         //检查txt文件内容
         if (type.equals("txt")) {
             String result = restTemplate.getForObject("http://localhost:9092/text?path=" + path + "&key=" + key, String.class);
-            if (result != null && result.equals("true")) {
+            //System.out.println( path+" "+result);
+            if (result != null && result.contains("true")) {
                 end = true;
             }
+            //System.out.println(path+" "+end);
         }
         //检查word文件内容
         if (type.equals("docx")) {
             String result = restTemplate.getForObject("http://localhost:9092/docx?path=" + path + "&key=" + key, String.class);
-            if (result != null && result.equals("true")) {
+            if (result != null && result.contains("true")) {
                 end = true;
             }
         }
         //检查pdf文件内容
         if (type.equals("pdf")) {
             String result = restTemplate.getForObject("http://localhost:9092/pdf?path=" + path + "&key=" + key, String.class);
-            if (result != null && result.equals("true")) {
+            if (result != null && result.contains("true")) {
                 end = true;
             }
         }
         return end;
+    }
+
+    //获得文件内容中包含指定信息的文件列表
+    public List<FileAndFolder> getFileAndFoldersByKeyWordInside(String path, String key, List<FileAndFolder> fileAndFolders) {
+        //如果文件夹不存在，直接返回空的list
+        if (!folderExists(path)) {
+            return fileAndFolders;
+        }
+        File file = new File(path);
+        File[] files = file.listFiles();
+        for (File fileIn : files) {
+            /*if(fileIn.isFile()) {
+                System.out.println(fileIn.getAbsolutePath() + " " + checkIfFileInclude(fileIn.getAbsolutePath(), key));
+            }*/
+            //如果是文件 就先判断文件内容是否包含关键字 包含的话就要
+            if (fileIn.isFile()&&checkIfFileInclude(fileIn.getAbsolutePath(),key)) {
+                String name = fileIn.getName();
+                String end = "";
+                String size = "0";
+                if (fileIn.isFile()) {
+                    end = name.substring(name.lastIndexOf(".") + 1);
+                    name = name.substring(0, name.lastIndexOf("."));
+                    size = String.valueOf(fileIn.length());
+                }
+                String type = fileIn.isFile() ? "file" : "folder";
+                FileAndFolder fileAndFolder = new FileAndFolder(name, end, size, type, fileIn);
+                fileAndFolders.add(fileAndFolder);
+            }
+            //如果是文件夹 就进入深层
+            if (fileIn.isDirectory()) {
+                getFolderContent(fileIn.getAbsolutePath(), key, fileAndFolders);
+            }
+        }
+        return fileAndFolders;
     }
 
 

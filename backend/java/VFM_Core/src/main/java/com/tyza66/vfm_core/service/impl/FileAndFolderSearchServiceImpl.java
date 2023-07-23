@@ -26,4 +26,9 @@ public class FileAndFolderSearchServiceImpl implements FileAndFolderSearchServic
     public List<FileAndFolder> searchFileAndFolderByName(String path, String keyword) {
         return FileAndFolderUtil.getFolderContent(path,keyword,new ArrayList<>());
     }
+
+    @Override
+    public List<FileAndFolder> searchFileAndFolderByContent(String path, String keyword) {
+        return fileAndFolderUtil.getFileAndFoldersByKeyWordInside(path,keyword,new ArrayList<>());
+    }
 }

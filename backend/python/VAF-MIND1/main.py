@@ -10,13 +10,14 @@ app = FastAPI(title="VAF-MIND1")
 def text(path: str = None, key: str = None):
     end = "false"
     # 打开文件
-    with open(path, 'r') as file:
-        # 读取文件内容
+    with open(path, encoding='utf-8') as file:
+        # 读取文件内容1
         content = file.read()
         # 关闭文件
         file.close()
         # 打印文件内容
         if key in content:
+            print(path)
             end = "true"
     return end
 

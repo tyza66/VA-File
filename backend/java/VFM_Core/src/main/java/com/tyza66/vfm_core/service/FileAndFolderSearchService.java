@@ -11,5 +11,9 @@ import java.util.List;
  **/
 
 public interface FileAndFolderSearchService {
+    //根据名称搜索
     List<FileAndFolder> searchFileAndFolderByName(String path,String keyword);
+
+    //根据文件内容搜索
+    List<FileAndFolder> searchFileAndFolderByContent(String path,String keyword);
 }
