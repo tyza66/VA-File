@@ -9,6 +9,7 @@
       <el-button size="small" type="link" @click="rootRoom()">回根目录</el-button>
       <el-button size="small" type="link" @click="rootRoom()">上传文件</el-button>
       <el-button size="small" type="link" @click="rootRoom()">新建文件</el-button>
+      <el-button size="small" type="link" @click="reflash()">刷新当前</el-button>
     </div>
     <div class="main">
       <div class="file-and-folder" v-for="(item, index) in context" :key="index">
@@ -33,13 +34,14 @@
           <p>{{ (item.type == "folder") ? (item.name) : (item.name + "." + item.end) }}</p>
         </div>
         <div class="conf">
-          <el-button size="small" link type="default" v-show="item.type == 'folder'">打开</el-button>
+          <el-button size="small" link type="default" v-show="item.type == 'folder'"
+            @click="openFolder(item.name)">打开</el-button>
           <el-button size="small" link type="default" v-show="item.type == 'file'">预览</el-button>
           <el-button size="small" link type="default" v-show="item.type != 'folder'">下载</el-button>
           <el-button size="small" link type="default" disabled v-show="item.type == 'folder'">下载</el-button>
           <el-button size="small" link type="default"
             @click="delete1((item.type == 'folder') ? (item.name) : (item.name + '.' + item.end), item.type)">删除</el-button>
-          <el-button size="small" link type="default">命名</el-button>
+          <el-button size="small" link type="default" @click="">命名</el-button>
         </div>
       </div>
     </div>
@@ -243,7 +245,18 @@ export default {
       }).catch(err => {
         console.log(err);
       })
-    }, backRoom() { },
+    }, backRoom() {
+      if (this.nowPath != "/") {
+        this.nowPath = this.nowPath.substring(0, this.nowPath.lastIndexOf("/"))
+        this.nowPath = this.nowPath.substring(0, this.nowPath.lastIndexOf("/"))+"/"
+        this.reflash()
+      } else {
+        ElMessage({
+          message: '已经是根目录了',
+          type: 'info'
+        })
+      }
+    },
     rootRoom() {
       this.nowPath = "/"
       this.getRootContext()
@@ -303,18 +316,21 @@ export default {
                 "satoken": this.getCookie("satoken")
               }
             }).then(res => {
+              if (res.code == 201) {
+                return
+              }
               if (res.code == 200) {
                 ElMessage({
                   message: '删除成功',
                   type: 'success'
                 })
-                this.getRootContext()
+                this.reflash()
               } else {
                 ElMessage({
                   message: '删除失败',
                   type: 'error'
                 })
-                this.getRootContext()
+                this.reflash()
               }
             }).catch(err => {
               console.log(err);
@@ -328,18 +344,21 @@ export default {
                 "satoken": this.getCookie("satoken")
               }
             }).then(res => {
+              if (res.code == 201) {
+                return
+              }
               if (res.code == 200) {
                 ElMessage({
                   message: '删除成功',
                   type: 'success'
                 })
-                this.getRootContext()
+                this.reflash()
               } else {
                 ElMessage({
                   message: '删除失败',
                   type: 'error'
                 })
-                this.getRootContext()
+                this.reflash()
               }
             }).catch(err => {
               console.log(err);
@@ -352,6 +371,46 @@ export default {
             message: '已取消删除',
           })
         })
+    },
+    openFolder(name) {
+      this.nowPath = this.nowPath + name + "/"
+      var that = this
+      request.get("/file/getIn", {
+        headers: {
+          "satoken": this.getCookie("satoken")
+        }, params: {
+          "partPath": this.nowPath.substring(1)
+        }
+      }).then(res => {
+        if (res.code == 201) {
+          return
+        }
+        if (res.code == 200) {
+          that.context = res.data
+          this.sortContent("type")
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    }, reflash() {
+      var that = this
+      request.get("/file/getIn", {
+        headers: {
+          "satoken": this.getCookie("satoken")
+        }, params: {
+          "partPath": this.nowPath.substring(1)
+        }
+      }).then(res => {
+        if (res.code == 201) {
+          return
+        }
+        if (res.code == 200) {
+          that.context = res.data
+          this.sortContent("type")
+        }
+      }).catch(err => {
+        console.log(err);
+      })
     }
   }
 }
