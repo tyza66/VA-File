@@ -3,11 +3,14 @@ package com.tyza66.vfm_core.util;
 import ch.qos.logback.classic.spi.EventArgUtil;
 import com.tyza66.vfm_core.pojo.FileAndFolder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,9 @@ public class FileAndFolderUtil {
 
     //公用输入流
     FileInputStream fileInputStream;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
 //静态方法
 
@@ -182,13 +188,13 @@ public class FileAndFolderUtil {
     }
 
     //通过旧文件夹路径和新文件名称修改文件夹名称
-    public static boolean renameFolder(String path,String newName){
+    public static boolean renameFolder(String path, String newName) {
         //首先判断文件夹是否存在 如果不存在就直接返回false
         if (!folderExists(path)) {
             return false;
         }
         //计算旧文件夹的所在路径地址
-        String folderName = getFolderName(path,1);
+        String folderName = getFolderName(path, 1);
         //计算新文件夹的完整路径地址
         String newPath = folderName + "/" + newName;
         //创建File对象
@@ -198,7 +204,7 @@ public class FileAndFolderUtil {
     }
 
     //通过旧文件路径和新文件名修改文件名
-    public static boolean renameFile(String path,String newName){
+    public static boolean renameFile(String path, String newName) {
         //首先判断文件是否存在 如果不存在就直接返回false
         if (!fileExists(path)) {
             return false;
@@ -214,7 +220,7 @@ public class FileAndFolderUtil {
     }
 
     //通过关键字搜索文件夹中名称包含关键字的文件和文件夹
-    public static List<FileAndFolder> getFolderContent(String path,String key,List<FileAndFolder> fileAndFolders) {
+    public static List<FileAndFolder> getFolderContent(String path, String key, List<FileAndFolder> fileAndFolders) {
         //如果文件夹不存在，直接返回空的list
         if (!folderExists(path)) {
             return fileAndFolders;
@@ -224,7 +230,7 @@ public class FileAndFolderUtil {
         for (File fileIn : files) {
             //进行保存操作之前先判断当前文件或文件夹的名称中是否包含关键字
             //有关键字的话才可以保存进去
-            if(fileIn.getName().contains(key)) {
+            if (fileIn.getName().contains(key)) {
                 String name = fileIn.getName();
                 String end = "";
                 String size = "0";
@@ -238,8 +244,8 @@ public class FileAndFolderUtil {
                 fileAndFolders.add(fileAndFolder);
             }
             //如果是文件夹 就进入深层
-            if(fileIn.isDirectory()){
-                getFolderContent(fileIn.getAbsolutePath(),key,fileAndFolders);
+            if (fileIn.isDirectory()) {
+                getFolderContent(fileIn.getAbsolutePath(), key, fileAndFolders);
             }
         }
         return fileAndFolders;
@@ -247,6 +253,38 @@ public class FileAndFolderUtil {
 
 //非静态方法
 
+    //使用py后端MIND1进行判断文件内容
+    public boolean checkIfFileInclude(String path, String key) {
+        //如果文件夹不存在，直接返回false
+        if (!fileExists(path)) {
+            return false;
+        }
+        boolean end = false;
+        String fileName = getFileName(path);
+        String type = fileName.substring(fileName.lastIndexOf(".") + 1);
+        //检查txt文件内容
+        if (type.equals("txt")) {
+            String result = restTemplate.getForObject("http://localhost:9092/text?path=" + path + "&key=" + key, String.class);
+            if (result != null && result.equals("true")) {
+                end = true;
+            }
+        }
+        //检查word文件内容
+        if (type.equals("docx")) {
+            String result = restTemplate.getForObject("http://localhost:9092/docx?path=" + path + "&key=" + key, String.class);
+            if (result != null && result.equals("true")) {
+                end = true;
+            }
+        }
+        //检查pdf文件内容
+        if (type.equals("pdf")) {
+            String result = restTemplate.getForObject("http://localhost:9092/pdf?path=" + path + "&key=" + key, String.class);
+            if (result != null && result.equals("true")) {
+                end = true;
+            }
+        }
+        return end;
+    }
 
 
 //Bean生命周期

@@ -9,17 +9,41 @@ app = FastAPI(title="VAF-MIND1")
 @app.get("/text", summary='text中判断', tags=['关键词判断'])
 def text(path: str = None, key: str = None):
     end = "false"
+    # 打开文件
+    with open(path, 'r') as file:
+        # 读取文件内容
+        content = file.read()
+        # 关闭文件
+        file.close()
+        # 打印文件内容
+        if key in content:
+            end = "true"
     return end
 
 
 @app.get("/docx", summary='doxc中判断', tags=['关键词判断'])
 def docx(path: str = None, key: str = None):
     end = "false"
+    text = docx2txt.process(path)
+    if key in text:
+        end = "true"
     return end
 
 @app.get("/pdf", summary='pdf中判断', tags=['关键词判断'])
 def pdf(path: str = None, key: str = None):
     end = "false"
+    with open(path, 'rb') as pdfFileObj:
+        pdfReader = PyPDF2.PdfReader(pdfFileObj)
+        num_pages = len(pdfReader.pages)
+        count = 0
+        text = ""
+        while count < num_pages:
+            pageObj = pdfReader.pages[count]
+            count += 1
+            text += pageObj.extract_text()
+        if key in text:
+            end = "true"
+        pdfFileObj.close()
     return end
 
 if __name__ == '__main__':

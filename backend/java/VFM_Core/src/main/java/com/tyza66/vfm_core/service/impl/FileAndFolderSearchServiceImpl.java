@@ -6,6 +6,7 @@ import com.tyza66.vfm_core.service.FileAndFolderService;
 import com.tyza66.vfm_core.util.FileAndFolderUtil;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,9 @@ import java.util.List;
 
 @Service
 public class FileAndFolderSearchServiceImpl implements FileAndFolderSearchService {
+
+   @Resource
+   FileAndFolderUtil fileAndFolderUtil;
 
     @Override
     public List<FileAndFolder> searchFileAndFolderByName(String path, String keyword) {
