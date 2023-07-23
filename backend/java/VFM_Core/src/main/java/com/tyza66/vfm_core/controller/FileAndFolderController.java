@@ -21,7 +21,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -269,4 +271,32 @@ public class FileAndFolderController {
         return obj;
     }
 
+    //如果是特定的格式的文件 可以在线预览
+    //如果是非特定格式的文件，直接进行下载
+    @ApiOperation("在线预览文件")
+    @GetMapping("/filesOnline")
+    public void downloadFile(@RequestParam String path, HttpServletResponse response) {
+        try {
+            String baseLocation = vfmLocationService.getNowLocation();
+            String filename = baseLocation + "/" + path;
+            File file = new File(filename);
+            FileInputStream inputStream = new FileInputStream(file);
+
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+            response.setHeader("Content-Length", String.valueOf(file.length()));
+
+            byte[] buffer = new byte[1024];
+            int bytesRead = -1;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                response.getOutputStream().write(buffer, 0, bytesRead);
+            }
+
+            inputStream.close();
+            response.getOutputStream().flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
