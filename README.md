@@ -6,6 +6,24 @@
 - 支持一些基本的文档操作、一些高级智能功能
 - 因为文件夹是使用的路径的形式进行访问的，使用这套系统的时候（并且没有进行文件夹网络映射的情况下），两个后端程序需要与树根文件夹在同一个设备上
 
+##### 展示图
+<details><summary>用户登录</summary>
+<img src="./文档/图片/用户登录.png"/>
+</details>
+<details><summary>文件管理</summary>
+<img src="./文档/图片/文件管理.png"/>
+</details>
+<details><summary>新建文件夹</summary>
+<img src="./文档/图片/新建文件夹.png"/>
+</details>
+<details><summary>新建文件</summary>
+<img src="./文档/图片/新建文件.png"/>
+</details>
+<details><summary>上传文件</summary>
+<img src="./文档/图片/上传文件.png"/>
+</details>
+
+
 ##### 预计实现功能
 - [X] 用户登录
 - [X] 文件夹管理
