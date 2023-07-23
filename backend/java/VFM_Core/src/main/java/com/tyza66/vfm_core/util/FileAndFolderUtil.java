@@ -2,11 +2,13 @@ package com.tyza66.vfm_core.util;
 
 import ch.qos.logback.classic.spi.EventArgUtil;
 import com.tyza66.vfm_core.pojo.FileAndFolder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
+import javax.annotation.PreDestroy;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +22,14 @@ import java.util.List;
 //所以虽然内部静态方法居多 还是需要注册Bean
 @Component
 @Scope(ConfigurableListableBeanFactory.SCOPE_SINGLETON)
+@Slf4j
 public class FileAndFolderUtil {
-//成员变量
+    //成员变量
+    //公用输出流
+    FileOutputStream fileOutputStream;
 
+    //公用输入流
+    FileInputStream fileInputStream;
 
 //静态方法
 
@@ -31,12 +38,12 @@ public class FileAndFolderUtil {
         return path.substring(path.lastIndexOf("/") + 1);
     }
 
-    //获得文件所在目录的路径
+    //获得文件或文件夹所在目录的路径
     public static String getFolderName(String path) {
         return path.substring(0, path.lastIndexOf("/"));
     }
 
-    //获得文件所在路径的上level级路径
+    //获得文件所在路径或文件夹的上level级路径
     public static String getFolderName(String path, int level) {
         //先使用/分割路径
         String[] split = path.split("/");
@@ -141,9 +148,9 @@ public class FileAndFolderUtil {
     }
 
     //通过路径创建文件夹
-    public static boolean createFolder(String path){
+    public static boolean createFolder(String path) {
         //首先判断文件夹本身是否存在 如果已经存在就直接返回false
-        if(folderExists(path)){
+        if (folderExists(path)) {
             return false;
         }
         //之后创建File对象
@@ -152,8 +159,77 @@ public class FileAndFolderUtil {
         return file.mkdirs();
     }
 
+    //通过完整路径（带拓展名）创建文件
+    public static boolean createFile(String path) {
+        //首先判断文件是否存在 如果已经存在就直接返回false
+        if (fileExists(path)) {
+            return false;
+        }
+        //之后创建File对象
+        File file = new File(path);
+        //创建文件
+        try {
+            return file.createNewFile();
+        } catch (IOException e) {
+            log.info("创建文件过程中失败");
+            return false;
+        }
+    }
+
+    //通过旧文件夹路径和新文件名称修改文件夹名称
+    public static boolean renameFolder(String path,String newName){
+        //首先判断文件夹是否存在 如果不存在就直接返回false
+        if (!folderExists(path)) {
+            return false;
+        }
+        //计算旧文件夹的所在路径地址
+        String folderName = getFolderName(path,1);
+        //计算新文件夹的完整路径地址
+        String newPath = folderName + "/" + newName;
+        //创建File对象
+        File oldFile = new File(path);
+        File newFile = new File(newPath);
+        return oldFile.renameTo(newFile);
+    }
+
+    //通过旧文件路径和新文件名修改文件名
+    public static boolean renameFile(String path,String newName){
+        //首先判断文件是否存在 如果不存在就直接返回false
+        if (!fileExists(path)) {
+            return false;
+        }
+        //计算旧文件的所在路径地址
+        String folderName = getFolderName(path);
+        //计算新文件的完整路径地址
+        String newPath = folderName + "/" + newName;
+        //创建File对象
+        File oldFile = new File(path);
+        File newFile = new File(newPath);
+        return oldFile.renameTo(newFile);
+    }
 
 //非静态方法
 
 
+
+//Bean生命周期
+
+    //销毁Bean的时候关闭公用输入输出流
+    @PreDestroy
+    public void cleanup() {
+        if (fileOutputStream != null) {
+            try {
+                fileOutputStream.close();
+            } catch (IOException e) {
+                log.info("关闭公用输出流失败");
+            }
+        }
+        if (fileInputStream != null) {
+            try {
+                fileInputStream.close();
+            } catch (IOException e) {
+                log.info("关闭公用输入流失败");
+            }
+        }
+    }
 }

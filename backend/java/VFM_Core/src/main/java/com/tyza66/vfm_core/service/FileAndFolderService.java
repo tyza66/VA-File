@@ -29,4 +29,13 @@ public interface FileAndFolderService {
 
     //创建路径指定的文件夹
     boolean createFolder(String path);
+
+    //创建指定路径的文件的方法
+    boolean createFile(String path);
+
+    //重命名文件夹
+    boolean renameFolder(String oldPath,String newName);
+
+    //重命名文件
+    boolean renameFile(String oldPath,String newName);
 }

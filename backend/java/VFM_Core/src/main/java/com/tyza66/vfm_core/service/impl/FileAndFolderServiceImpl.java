@@ -56,5 +56,20 @@ public class FileAndFolderServiceImpl implements FileAndFolderService {
         return FileAndFolderUtil.createFolder(path);
     }
 
+    @Override
+    public boolean createFile(String path) {
+        return FileAndFolderUtil.createFile(path);
+    }
+
+    @Override
+    public boolean renameFolder(String oldPath, String newName) {
+        return FileAndFolderUtil.renameFolder(oldPath,newName);
+    }
+
+    @Override
+    public boolean renameFile(String oldPath, String newName) {
+        return FileAndFolderUtil.renameFile(oldPath,newName);
+    }
+
 
 }
