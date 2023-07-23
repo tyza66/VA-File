@@ -6,6 +6,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.ArrayList;
+
 /**
  * Author: tyza66
  * Date: 2023/7/22 14:39
@@ -19,8 +21,10 @@ public class GlobalCorsConfig {
     public CorsFilter corsFilter() {
         //1. 添加 CORS配置信息
         CorsConfiguration config = new CorsConfiguration();
+        ArrayList<String> strings = new ArrayList<>();
+        strings.add("*");
         //放行哪些原始域
-        config.addAllowedOrigin("*");
+        config.setAllowedOriginPatterns(strings);
         //是否发送 Cookie
         config.setAllowCredentials(true);
         //放行哪些请求方式

@@ -34,10 +34,11 @@ public class VfmUserController {
             obj.set("code", 199);
             obj.set("msg", "登录失败");
         } else {
-            obj.set("code", 200);
-            obj.set("msg", "登录成功");
             StpUtil.login(0);
             StpUtil.getSession().set("user", login);
+            obj.set("code", 200);
+            obj.set("msg", "登录成功");
+            obj.set("token", StpUtil.getTokenValue());
         }
         return obj;
     }
@@ -73,4 +74,22 @@ public class VfmUserController {
         }
         return obj;
     }
+
+    //检查当前登陆状态 并且将当前用户信息返回
+    @ApiOperation("检查当前登陆状态")
+    @GetMapping("/checkLogin")
+    public JSON checkLogin() {
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            obj.set("code", 200);
+            obj.set("msg", "已登录");
+            obj.set("user", StpUtil.getSession().get("user"));
+            obj.set("token", StpUtil.getTokenValue());
+        } else {
+            obj.set("code", 199);
+            obj.set("msg", "未登录");
+        }
+        return obj;
+    }
+
 }

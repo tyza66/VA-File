@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const request = axios.create({
-	baseURL: 'http://localhost:9090',  
+    baseURL: 'http://localhost:9090',
     timeout: 5000
 })
 
@@ -10,8 +10,7 @@ export const request = axios.create({
 // 比如统一加token，对请求参数统一加密
 request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
-  
- // config.headers['token'] = user.token;  // 设置请求头
+    // config.headers['token'] = user.token;  // 设置请求头
     return config
 }, error => {
     return Promise.reject(error)
