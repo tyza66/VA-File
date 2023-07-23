@@ -41,7 +41,8 @@
           <el-button size="small" link type="default" disabled v-show="item.type == 'folder'">下载</el-button>
           <el-button size="small" link type="default"
             @click="delete1((item.type == 'folder') ? (item.name) : (item.name + '.' + item.end), item.type)">删除</el-button>
-          <el-button size="small" link type="default" @click="">命名</el-button>
+          <el-button size="small" link type="default"
+            @click="rename((item.type == 'folder') ? (item.name) : (item.name + '.' + item.end), item.type)">命名</el-button>
         </div>
       </div>
     </div>
@@ -248,7 +249,7 @@ export default {
     }, backRoom() {
       if (this.nowPath != "/") {
         this.nowPath = this.nowPath.substring(0, this.nowPath.lastIndexOf("/"))
-        this.nowPath = this.nowPath.substring(0, this.nowPath.lastIndexOf("/"))+"/"
+        this.nowPath = this.nowPath.substring(0, this.nowPath.lastIndexOf("/")) + "/"
         this.reflash()
       } else {
         ElMessage({
@@ -298,7 +299,7 @@ export default {
       //console.log(name, type);
       ElMessageBox.confirm(
         '确定要删除吗?',
-        '提示',
+        '删除',
         {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -411,6 +412,69 @@ export default {
       }).catch(err => {
         console.log(err);
       })
+    },
+    rename(name, type) {
+      console.log(name, type);
+      ElMessageBox.prompt('请输入文件/文件夹新的名称', '重命名', {
+        confirmButtonText: '重命名',
+        cancelButtonText: '取消',
+      })
+        .then(({ value }) => {
+          if (type == "file") {
+            request.get("/file/renameFile", {
+              params: {
+                "partPath": this.nowPath.substring(1) + name,
+                "newName": value
+              },
+              headers: {
+                "satoken": this.getCookie("satoken")
+              }
+            }).then(res => {
+              if (res.code == 201) {
+                return
+              }
+              if (res.code == 200) {
+                ElMessage({
+                  type: 'success',
+                  message: `重命名成功！新的名称:${value}`,
+                })
+                this.reflash()
+              }
+            }).catch(err => {
+              console.log(err);
+            })
+          }else if(type=="folder"){
+            request.get("/file/renameFolder", {
+              params: {
+                "partPath": this.nowPath.substring(1) + name,
+                "newName": value
+              },
+              headers: {
+                "satoken": this.getCookie("satoken")
+              }
+            }).then(res => {
+              console.log(res);
+              if (res.code == 201) {
+                return
+              }
+              if (res.code == 200) {
+                ElMessage({
+                  type: 'success',
+                  message: `重命名成功！新的名称:${value}`,
+                })
+                this.reflash()
+              }
+            }).catch(err => {
+              console.log(err);
+            })
+          }
+        })
+        .catch(() => {
+          ElMessage({
+            type: 'info',
+            message: '已取消重命名',
+          })
+        })
     }
   }
 }
