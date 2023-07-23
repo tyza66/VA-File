@@ -35,6 +35,8 @@ public class VfmUserController {
             obj.set("msg", "登录失败");
         } else {
             StpUtil.login(0);
+            //将保存信息中的秘密替换
+            login.setVfmuPassword("000000");
             StpUtil.getSession().set("user", login);
             obj.set("code", 200);
             obj.set("msg", "登录成功");

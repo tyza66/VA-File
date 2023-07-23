@@ -275,10 +275,10 @@ public class FileAndFolderController {
     //如果是非特定格式的文件，直接进行下载
     @ApiOperation("在线预览文件")
     @GetMapping("/filesOnline")
-    public void downloadFile(@RequestParam String path, HttpServletResponse response) {
+    public void downloadFile(@RequestParam String partPath, HttpServletResponse response) {
         try {
             String baseLocation = vfmLocationService.getNowLocation();
-            String filename = baseLocation + "/" + path;
+            String filename = baseLocation + "/" + partPath;
             File file = new File(filename);
             FileInputStream inputStream = new FileInputStream(file);
 

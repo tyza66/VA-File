@@ -46,7 +46,7 @@
 
 ##### 前端程序
 - 环境：Node、Vue3.0
-- Web前端使用技术：Element-plus、Axios、Vue-router、Vuex
+- Web前端使用技术：Element-plus、Axios、Vue-router、Vuex、iconfont
 
 ##### V计划
 - https://github.com/tyza66/ProjectV

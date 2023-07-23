@@ -100,13 +100,13 @@ export default {
           if (res.code == 200) {
             this.setCookie("satoken", res.token);
             ElMessage({
-              message: '登录成功,三秒后跳转',
+              message: '登录成功,1秒后跳转',
               type: 'success'
             })
             setInterval(
               () => {
                 this.$router.push('/home')
-              }, 3000)
+              }, 1000)
           } else {
             ElMessage({
               message: res.msg,
