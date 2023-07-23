@@ -16,6 +16,8 @@ import java.util.List;
  * Github: https://github.com/tyza66
  **/
 
+//因为这个类对象中会声明公用的输入输出流 并设计悲观锁操作
+//所以虽然内部静态方法居多 还是需要注册Bean
 @Component
 @Scope(ConfigurableListableBeanFactory.SCOPE_SINGLETON)
 public class FileAndFolderUtil {
@@ -137,6 +139,19 @@ public class FileAndFolderUtil {
         //删除文件夹
         return file.delete();
     }
+
+    //通过路径创建文件夹
+    public boolean createFolder(String path){
+        //首先判断文件夹本身是否存在 如果已经存在就直接返回false
+        if(folderExists(path)){
+            return false;
+        }
+        //之后创建File对象
+        File file = new File(path);
+        //创建文件夹
+        return file.mkdirs();
+    }
+
 
 //非静态方法
 
