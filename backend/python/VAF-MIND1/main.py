@@ -42,8 +42,9 @@ def pdf(path: str = None, key: str = None):
             pageObj = pdfReader.pages[count]
             count += 1
             text += pageObj.extract_text()
-        if key in text:
-            end = "true"
+            if key in text:
+                end = "true"
+                break
         pdfFileObj.close()
     return end
 
