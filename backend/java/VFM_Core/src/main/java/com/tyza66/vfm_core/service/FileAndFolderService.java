@@ -26,4 +26,7 @@ public interface FileAndFolderService {
 
     //删除指定的文件夹
     boolean deleteFolder(String path);
+
+    //创建路径指定的文件夹
+    boolean createFolder(String path);
 }

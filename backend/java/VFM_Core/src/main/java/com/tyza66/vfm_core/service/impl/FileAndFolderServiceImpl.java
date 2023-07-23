@@ -51,5 +51,10 @@ public class FileAndFolderServiceImpl implements FileAndFolderService {
         return FileAndFolderUtil.deleteFolder(path);
     }
 
+    @Override
+    public boolean createFolder(String path) {
+        return FileAndFolderUtil.createFolder(path);
+    }
+
 
 }

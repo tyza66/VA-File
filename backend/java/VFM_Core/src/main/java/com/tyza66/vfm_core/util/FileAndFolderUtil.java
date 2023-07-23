@@ -141,7 +141,7 @@ public class FileAndFolderUtil {
     }
 
     //通过路径创建文件夹
-    public boolean createFolder(String path){
+    public static boolean createFolder(String path){
         //首先判断文件夹本身是否存在 如果已经存在就直接返回false
         if(folderExists(path)){
             return false;
