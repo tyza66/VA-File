@@ -41,6 +41,8 @@
 - Python后端使用技术：FastAPI、HuggingFace、PyTorch
 - Java后端端口：9090
 - 响应代码：199失败、200成功、201权限不足
+- Python后端
+    - MIND0端口：9091
 
 ##### 前端程序
 - 环境：Node、Vue3.0
