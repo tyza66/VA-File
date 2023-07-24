@@ -263,7 +263,7 @@ public class FileAndFolderUtil {
         String fileName = getFileName(path);
         String type = fileName.substring(fileName.lastIndexOf(".") + 1);
         //检查txt文件内容
-        if (type.equals("txt")) {
+        if (type.equals("txt")||type.equals("java")||type.equals("c")) {
             String result = restTemplate.getForObject("http://localhost:9092/text?path=" + path + "&key=" + key, String.class);
             //System.out.println( path+" "+result);
             if (result != null && result.contains("true")) {
