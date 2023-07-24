@@ -25,14 +25,16 @@
             <el-button type="default" @click="createNewUser()">提交</el-button>
           </el-form-item>
           <el-form-item label="禁用用户：">
-            <el-input></el-input>
-            <el-button type="default">清空</el-button>
-            <el-button type="default">提交</el-button>
+            用户名：<el-input v-model="disableName"></el-input>
+            动态码：<el-input v-model="proxyCode3"></el-input>
+            <el-button type="default" @click="clearDisable()">清空</el-button>
+            <el-button type="default" @click="disableUser()">提交</el-button>
           </el-form-item>
           <el-form-item label="解禁用户：">
-            <el-input></el-input>
-            <el-button type="default">清空</el-button>
-            <el-button type="default">提交</el-button>
+            用户名：<el-input v-model="enableName"></el-input>
+            动态码：<el-input v-model="proxyCode4"></el-input>
+            <el-button type="default" @click="clearEnable()">清空</el-button>
+            <el-button type="default" @click="enableUser()">提交</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -80,6 +82,10 @@ export default {
       newUserName: '',
       newUserPassword: '',
       proxyCode2: '',
+      disableName: '',
+      proxyCode3: '',
+      enableName: '',
+      proxyCode4: ''
     }
   },
   created() {
@@ -240,6 +246,106 @@ export default {
             if (res.code == 199) {
               this.$message({
                 message: '创建失败，用户名已存在',
+                type: 'error'
+              });
+            }
+          }).catch(err => {
+            console.log(err);
+          })
+        } else {
+          this.$message({
+            message: '动态码错误',
+            type: 'error'
+          });
+        }
+      })
+    },
+    clearDisable() {
+      this.disableName = '';
+      this.proxyCode3 = '';
+    },
+    clearEnable() {
+      this.enableName = '';
+      this.proxyCode4 = '';
+    },
+    disableUser() {
+      this.$confirm('确认禁用用户？').then(() => {
+        //为空验证
+        if (this.disableName == '' || this.proxyCode3 == '') {
+          this.$message({
+            message: '请填写完整',
+            type: 'error'
+          });
+          return
+        }
+        if (this.proxyCode3 == "96") {
+          request.get("/user/disableUser", {
+            params: {
+              "username": this.disableName
+            },
+            headers: {
+              "satoken": this.getCookie("satoken")
+            }
+          }).then(res => {
+            if (res.cede == 201) {
+              return
+            }
+            if (res.code == 200) {
+              this.$message({
+                message: '禁用成功',
+                type: 'success'
+              });
+              this.clearDisable();
+            }
+            if (res.code == 199) {
+              this.$message({
+                message: '禁用失败，用户名不存在',
+                type: 'error'
+              });
+            }
+          }).catch(err => {
+            console.log(err);
+          })
+        } else {
+          this.$message({
+            message: '动态码错误',
+            type: 'error'
+          });
+        }
+      })
+    },
+    enableUser() {
+      this.$confirm('确认解禁用户？').then(() => {
+        //为空验证
+        if (this.enableName == '' || this.proxyCode4 == '') {
+          this.$message({
+            message: '请填写完整',
+            type: 'error'
+          });
+          return
+        }
+        if (this.proxyCode4 == "96") {
+          request.get("/user/enableUser", {
+            params: {
+              "username": this.enableName
+            },
+            headers: {
+              "satoken": this.getCookie("satoken")
+            }
+          }).then(res => {
+            if (res.cede == 201) {
+              return
+            }
+            if (res.code == 200) {
+              this.$message({
+                message: '解禁成功',
+                type: 'success'
+              });
+              this.clearEnable();
+            }
+            if (res.code == 199) {
+              this.$message({
+                message: '解禁失败，用户名不存在',
                 type: 'error'
               });
             }

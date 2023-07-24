@@ -115,4 +115,44 @@ public class VfmUserController {
         return obj;
     }
 
+    @ApiOperation("禁用用户")
+    @GetMapping("/disableUser")
+    public JSON disableUser(@RequestParam String username) {
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            Boolean aBoolean = vfmUserServer.disableUser(username);
+            if (aBoolean) {
+                obj.set("code", 200);
+                obj.set("msg", "禁用成功");
+            } else {
+                obj.set("code", 199);
+                obj.set("msg", "禁用失败");
+            }
+        } else {
+            obj.set("code", 201);
+            obj.set("msg", "请先登录");
+        }
+        return obj;
+    }
+
+    @ApiOperation("启用用户")
+    @GetMapping("/enableUser")
+    public JSON enableUser(@RequestParam String username) {
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            Boolean aBoolean = vfmUserServer.enableUser(username);
+            if (aBoolean) {
+                obj.set("code", 200);
+                obj.set("msg", "启用成功");
+            } else {
+                obj.set("code", 199);
+                obj.set("msg", "启用失败");
+            }
+        } else {
+            obj.set("code", 201);
+            obj.set("msg", "请先登录");
+        }
+        return obj;
+    }
+
 }

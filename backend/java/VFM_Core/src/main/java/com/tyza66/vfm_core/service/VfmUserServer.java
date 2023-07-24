@@ -18,4 +18,10 @@ public interface VfmUserServer {
 
     //修改用户密码
     Boolean changePassword(String username,String newPassword);
+
+    //禁用用户
+    Boolean disableUser(String username);
+
+    //解禁用户
+    Boolean enableUser(String username);
 }

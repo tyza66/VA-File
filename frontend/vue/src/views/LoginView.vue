@@ -103,7 +103,7 @@ export default {
               message: '登录成功,1秒后跳转',
               type: 'success'
             })
-            setInterval(
+            setTimeout(
               () => {
                 this.$router.push('/home')
               }, 1000)

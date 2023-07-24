@@ -64,4 +64,30 @@ public class VfmUserServerImpl extends ServiceImpl<VfmUserMapper, VfmUser> imple
         vfmUser.setVfmuPassword(newPassword);
         return baseMapper.updateById(vfmUser)>0;
     }
+
+    @Override
+    public Boolean disableUser(String username) {
+        QueryWrapper<VfmUser> vfmUserQueryWrapper = new QueryWrapper<>();
+        vfmUserQueryWrapper.eq("vfmu_username", username);
+        List<VfmUser> vfmUsers = baseMapper.selectList(vfmUserQueryWrapper);
+        if(vfmUsers==null||vfmUsers.size()<=0){
+            return false;
+        }
+        VfmUser vfmUser = vfmUsers.get(0);
+        vfmUser.setIsDelete(true);
+        return baseMapper.updateById(vfmUser)>0;
+    }
+
+    @Override
+    public Boolean enableUser(String username) {
+        QueryWrapper<VfmUser> vfmUserQueryWrapper = new QueryWrapper<>();
+        vfmUserQueryWrapper.eq("vfmu_username", username);
+        List<VfmUser> vfmUsers = baseMapper.selectList(vfmUserQueryWrapper);
+        if(vfmUsers==null||vfmUsers.size()<=0){
+            return false;
+        }
+        VfmUser vfmUser = vfmUsers.get(0);
+        vfmUser.setIsDelete(false);
+        return baseMapper.updateById(vfmUser)>0;
+    }
 }
