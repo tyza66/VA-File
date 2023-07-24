@@ -89,8 +89,28 @@ public class VfmUserController {
             obj.set("user", StpUtil.getSession().get("user"));
             obj.set("token", StpUtil.getTokenValue());
         } else {
-            obj.set("code", 199);
+            obj.set("code", 201);
             obj.set("msg", "未登录");
+        }
+        return obj;
+    }
+
+    @ApiOperation("修改密码")
+    @PostMapping("/changePassword")
+    public JSON changePassword(@RequestBody VfmUser user) {
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            Boolean aBoolean = vfmUserServer.changePassword(((VfmUser) StpUtil.getSession().get("user")).getVfmuUsername(), user.getVfmuPassword());
+            if (aBoolean) {
+                obj.set("code", 200);
+                obj.set("msg", "修改成功");
+            } else {
+                obj.set("code", 199);
+                obj.set("msg", "修改失败");
+            }
+        } else {
+            obj.set("code", 201);
+            obj.set("msg", "请先登录");
         }
         return obj;
     }

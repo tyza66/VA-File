@@ -164,7 +164,7 @@
 
 <script>
 import { request, ref } from '@/utils/request';
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 
 export default {
   name: 'HomeView',
@@ -230,7 +230,13 @@ export default {
       ).then(res => {
         //console.log(res);
         if (res.code == 200) {
-          this.$router.push('/login')
+          this.$message({
+            message: '退出登录成功,一秒后跳转回登录界面',
+            type: 'success'
+          })
+          setTimeout(() => {
+            this.$router.push('/login')
+          }, 1000);
         }
       }).catch(err => {
         console.log(err);
@@ -249,10 +255,10 @@ export default {
           return
         }
         if (res.code == 200) {
-          ElMessage({
-            message: '物理文件根路径检查成功',
-            type: 'success'
-          })
+          // this.$message({
+          //   message: '物理文件根路径检查成功',
+          //   type: 'success'
+          // })
           request.get("/location/get", {
             headers: {
               "satoken": this.getCookie("satoken")
@@ -266,7 +272,7 @@ export default {
             console.log(err);
           })
         } else {
-          ElMessage({
+          this.$message({
             message: '物理文件根路径检查失败，请前往设置中进行修改',
             type: 'error'
           })
@@ -280,7 +286,7 @@ export default {
         this.nowPath = this.nowPath.substring(0, this.nowPath.lastIndexOf("/")) + "/"
         this.reflash()
       } else {
-        ElMessage({
+        this.$message({
           message: '已经是根目录了',
           type: 'info'
         })
@@ -289,7 +295,7 @@ export default {
     rootRoom() {
       this.nowPath = "/"
       this.getRootContext()
-      ElMessage({
+      this.$message({
         message: '回到根目录成功',
         type: 'success'
       })
@@ -353,13 +359,13 @@ export default {
                 return
               }
               if (res.code == 200) {
-                ElMessage({
+                this.$message({
                   message: '删除成功',
                   type: 'success'
                 })
                 this.reflash()
               } else {
-                ElMessage({
+                this.$message({
                   message: '删除失败',
                   type: 'error'
                 })
@@ -381,13 +387,13 @@ export default {
                 return
               }
               if (res.code == 200) {
-                ElMessage({
+                this.$message({
                   message: '删除成功',
                   type: 'success'
                 })
                 this.reflash()
               } else {
-                ElMessage({
+                this.$message({
                   message: '删除失败',
                   type: 'error'
                 })
@@ -399,7 +405,7 @@ export default {
           }
         })
         .catch(() => {
-          ElMessage({
+          this.$message({
             type: 'info',
             message: '已取消删除',
           })
@@ -440,7 +446,7 @@ export default {
         if (res.code == 200) {
           that.context = res.data
           this.sortContent("type")
-          ElMessage({
+          this.$message({
             message: '已刷新当前目录',
             type: 'success'
           })
@@ -470,7 +476,7 @@ export default {
                 return
               }
               if (res.code == 200) {
-                ElMessage({
+                this.$message({
                   type: 'success',
                   message: `重命名成功！新的名称:${value}`,
                 })
@@ -494,7 +500,7 @@ export default {
                 return
               }
               if (res.code == 200) {
-                ElMessage({
+                this.$message({
                   type: 'success',
                   message: `重命名成功！新的名称:${value}`,
                 })
@@ -506,7 +512,7 @@ export default {
           }
         })
         .catch(() => {
-          ElMessage({
+          this.$message({
             type: 'info',
             message: '已取消重命名',
           })
@@ -533,7 +539,7 @@ export default {
               return
             }
             if (res.code == 200) {
-              ElMessage({
+              this.$message({
                 type: 'success',
                 message: `新建文件夹成功！名称为:${value}`,
               })
@@ -544,7 +550,7 @@ export default {
           })
         })
         .catch(() => {
-          ElMessage({
+          this.$message({
             type: 'info',
             message: '已取消创建文件夹',
           })
@@ -567,7 +573,7 @@ export default {
               return
             }
             if (res.code == 200) {
-              ElMessage({
+              this.$message({
                 type: 'success',
                 message: `新建文件成功！名称为:${value}`,
               })
@@ -578,7 +584,7 @@ export default {
           })
         })
         .catch(() => {
-          ElMessage({
+          this.$message({
             type: 'info',
             message: '已取消创建文件',
           })
@@ -596,7 +602,7 @@ export default {
         })
     },uploadClose(){
       this.uploadShow = false;
-      ElMessage({
+      this.$message({
             type: 'info',
             message: '已取消上传文件',
           })
@@ -616,7 +622,7 @@ export default {
               return
             }
             if (res.code == 200) {
-              ElMessage({
+              this.$message({
                 type: 'success',
                 message: `上传文件成功！`,
               })

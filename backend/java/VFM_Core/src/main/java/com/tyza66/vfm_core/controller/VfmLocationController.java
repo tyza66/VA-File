@@ -4,14 +4,14 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.tyza66.vfm_core.pojo.VfmLocation;
+import com.tyza66.vfm_core.pojo.VfmUser;
 import com.tyza66.vfm_core.service.VfmLocationService;
 import com.tyza66.vfm_core.service.impl.VfmLocationServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Author: tyza66
@@ -48,4 +48,22 @@ public class VfmLocationController {
         return obj;
     }
 
+    @ApiOperation("设置当前文件基本位置")
+    @PostMapping("/set")
+    public JSON setNowLocation(@RequestBody VfmLocation vfmLocation) {
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            if (vfmLocationService.setNowLocation(vfmLocation.getVfmlLocation(), (VfmUser) StpUtil.getSession().get("user"))) {
+                obj.set("code", 200);
+                obj.set("msg", "设置成功");
+            } else {
+                obj.set("code", 199);
+                obj.set("msg", "设置失败");
+            }
+        } else {
+            obj.set("code", 201);
+            obj.set("msg", "未登录");
+        }
+        return obj;
+    }
 }

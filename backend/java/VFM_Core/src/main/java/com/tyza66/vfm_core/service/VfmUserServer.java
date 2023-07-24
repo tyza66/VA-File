@@ -15,4 +15,7 @@ public interface VfmUserServer {
 
     //已经登录的用户通过设置添加其他用户
     Boolean register(String username,String password,VfmUser vfmUser);
+
+    //修改用户密码
+    Boolean changePassword(String username,String newPassword);
 }

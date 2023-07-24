@@ -27,6 +27,9 @@ public class VfmUserServerImpl extends ServiceImpl<VfmUserMapper, VfmUser> imple
         if(vfmUsers.size()<=0){
             return null;
         }
+        if(vfmUsers.get(0).getIsDelete()){
+            return null;
+        }
         return vfmUsers.get(0);
     }
 
@@ -47,5 +50,18 @@ public class VfmUserServerImpl extends ServiceImpl<VfmUserMapper, VfmUser> imple
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Boolean changePassword(String username, String newPassword) {
+        QueryWrapper<VfmUser> vfmUserQueryWrapper = new QueryWrapper<>();
+        vfmUserQueryWrapper.eq("vfmu_username", username);
+        List<VfmUser> vfmUsers = baseMapper.selectList(vfmUserQueryWrapper);
+        if(vfmUsers.size()<=0){
+            return false;
+        }
+        VfmUser vfmUser = vfmUsers.get(0);
+        vfmUser.setVfmuPassword(newPassword);
+        return baseMapper.updateById(vfmUser)>0;
     }
 }

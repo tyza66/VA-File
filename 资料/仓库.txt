@@ -1,3 +1,5 @@
 https://github.com/tyza66/ProjectV
 https://github.com/tyza66/TravelAgencyManagement
 https://github.com/tyza66/ManagementBackgroundInterface
+https://github.com/tyza66/WebSocketChatRoom
+https://github.com/tyza66/TalkingMoreIsBeneficial

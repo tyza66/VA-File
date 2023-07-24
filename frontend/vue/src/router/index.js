@@ -7,8 +7,7 @@ import SearchView from '../views/SearchView.vue'
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    redirect: "/home"
   },
   {
     path: '/home',
