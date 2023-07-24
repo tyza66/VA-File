@@ -24,8 +24,8 @@
         </el-form-item>
       </div>
       <el-button class="sb" type="default" @click="search()">搜索</el-button>
-      <el-button class="rb" type="default" size="small">设置</el-button>
-      <el-button class="rb" type="default" size="small">返回主页</el-button>
+      <el-button class="rb" type="default" size="small" @click="goSetting()">设置</el-button>
+      <el-button class="rb" type="default" size="small" @click="goHome()">返回主页</el-button>
     </div>
     <div class="items">
       <el-row class="item-one item-title">
@@ -223,6 +223,12 @@ export default {
     },
     search(){
       console.log(this.searchType)
+    },
+    goSetting(){
+      this.$router.push('/setting')
+    },
+    goHome(){
+      this.$router.push('/home')
     }
   }
 }
