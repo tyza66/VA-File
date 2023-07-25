@@ -11,5 +11,5 @@ import com.tyza66.vfm_core.pojo.VfmUser;
 
 public interface FileShareService {
 
-    boolean addFileToShareList(FileShare fileShare, VfmUser vfmUser);
+    boolean addFileToShareList(String shareMan,String user, String link);
 }

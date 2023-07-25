@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FileShare {
+    String shareMan;
     String name;
     String downloadUrl;
 }
