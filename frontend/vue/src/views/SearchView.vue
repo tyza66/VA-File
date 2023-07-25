@@ -82,10 +82,10 @@
         <el-col class="control" :span="8">
           <el-button type="default" size="small" v-show="item.type == 'file'">预览</el-button>
           <el-button type="default" size="small" v-show="item.type == 'folder'">打开</el-button>
-          <el-button type="default" size="small">前往</el-button>
+          <el-button type="default" size="small" @click="goParent(item.prototype)">前往</el-button>
           <el-button type="default" size="small" @click="delete1(item.prototype, item.type)">删除</el-button>
           <el-button type="default" size="small" @click="rename(item.prototype, item.type)">命名</el-button>
-          <el-button type="default" size="small" v-show="item.type == 'file'">下载</el-button>
+          <el-button type="default" size="small" v-show="item.type == 'file'" @click="download(item.prototype)">下载</el-button>
           <el-button type="default" size="small" v-show="item.type == 'folder'"
             @click="setPath(item.prototype)">设为根路径</el-button>
         </el-col>
@@ -492,6 +492,13 @@ export default {
             message: '已取消重命名',
           })
         })
+    },
+    download(name) {
+      var path = "http://localhost:9090/file/download.action?partPath=" + name.substring(1)
+      //console.log(path);
+      window.open(path)
+    },goParent(path){
+      window.location.href = "http://localhost:8080/home?path=" + path.substring(0, path.lastIndexOf("/"))
     }
   }
 }

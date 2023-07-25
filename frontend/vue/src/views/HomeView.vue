@@ -49,26 +49,21 @@
         </div>
       </div>
     </div>
-    <el-dialog
-    v-model="uploadShow"
-    title="文件上传"
-    width="30%"
-    :before-close="handleClose"
-  >
-    <div>
-      上传路径：<input type="text" v-model="nowPath" disabled>
-      <br/>
-      选择文件：<input type="file" id="file" name="file">
-    </div>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="uploadClose()">取消</el-button>
-        <el-button type="primary" @click="uplodatSubmit()">
-          提交
-        </el-button>
-      </span>
-    </template>
-  </el-dialog>
+    <el-dialog v-model="uploadShow" title="文件上传" width="30%" :before-close="handleClose">
+      <div>
+        上传路径：<input type="text" v-model="nowPath" disabled>
+        <br />
+        选择文件：<input type="file" id="file" name="file">
+      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="uploadClose()">取消</el-button>
+          <el-button type="primary" @click="uplodatSubmit()">
+            提交
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -184,6 +179,7 @@ export default {
     this.checkLogin()
     this.checkRoot()
     this.getRootContext()
+    this.checkPath()
   },
   methods: {
     checkLogin() {
@@ -600,41 +596,68 @@ export default {
         .catch(() => {
           // catch error
         })
-    },uploadClose(){
+    }, uploadClose() {
       this.uploadShow = false;
       this.$message({
-            type: 'info',
-            message: '已取消上传文件',
-          })
+        type: 'info',
+        message: '已取消上传文件',
+      })
     },
-    uplodatSubmit(){
+    uplodatSubmit() {
       const file = document.querySelector('input[type=file]').files[0]
       const formData = new FormData()
       formData.append('file', file)
       formData.append('partPath', this.nowPath.substring(1))
-      request.post("/file/upload.action",formData,{
+      request.post("/file/upload.action", formData, {
         headers: {
           "satoken": this.getCookie("satoken")
         }
       }).then(
-        res=>{
+        res => {
           if (res.code == 201) {
-              return
-            }
-            if (res.code == 200) {
-              this.$message({
-                type: 'success',
-                message: `上传文件成功！`,
-              })
-              this.reflash()
-              this.uploadShow = false;
-            }
+            return
+          }
+          if (res.code == 200) {
+            this.$message({
+              type: 'success',
+              message: `上传文件成功！`,
+            })
+            this.reflash()
+            this.uploadShow = false;
+          }
         }
       ).catch(error => {
         console.log(error);
       })
-    },search(){
+    }, search() {
       this.$router.push('/search')
+    }, getQueryVariable(variable) {
+      //获取当前URL中的查询字符串部分（即问号后面的部分）
+      var query = window.location.search.substring(1);
+      //把查询字符串按照&amp;符号分割成数组
+      var vars = query.split("&amp;");
+      //遍历其中中的每个元素
+      for (var i = 0; i < vars.length; i++) {
+        //把当前元素按照=符号分割成键和值
+        var pair = vars[i].split("=");
+        //如果当前元素的键等于参数名，则返回对应的值
+        if (pair[0] == variable) {
+          return decodeURI(pair[1]);
+        }
+      }
+      //如果没有找到匹配的参数名，则返回false
+      return false;
+    }, checkPath() {
+      var path = this.getQueryVariable("path")
+      console.log(path);
+      if (path) {
+        this.nowPath = path
+        setTimeout(()=>{
+          this.reflash()
+        },100)
+      } else {
+        this.nowPath = "/"
+      }
     }
   }
 }
