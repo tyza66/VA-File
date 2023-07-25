@@ -13,13 +13,17 @@
     </div>
     <div class="left2">
       <div class="title">
-        <h2 style="text-align:center;font-family:'宋体';height:50px;line-height:50px;">操作</h2>
+        <h2 style="text-align:center;font-family:'宋体';height:50px;line-height:50px;">相关操作</h2>
       </div>
       <div class="left-context">
-
+        <el-button type="default" @click="gohome()">返回主页</el-button>
+        <el-button type="default" @click="goSetting()">前往设置</el-button>
+        <el-button type="default" @click="goSearch()">文件检索</el-button>
+        <el-button type="default" @click="changeWay()">切换优先</el-button>
+        <el-button type="default" @click="clearChat()">清除聊天</el-button>
       </div>
     </div>
-    <div class="chat-context">
+    <div class="chat-context" :class="chatWay" ref="chat">
       <div class="title" style="text-align:center;font-family:'宋体';height:50px;line-height:50px;">
         <h2>内部聊天</h2>
       </div>
@@ -35,7 +39,7 @@
       </div>
     </div>
 
-    <div class="right">
+    <div class="right" :class="fileWay" ref="file">
       <div class="title" style="text-align:center;font-family:'宋体';height:50px;line-height:50px;">
         <h2>文件栈</h2>
       </div>
@@ -58,7 +62,6 @@
   left: 0;
   top: 220px;
   width: 200px;
-  height: 90px;
   background-color: #f5f5f5;
 }
 
@@ -73,14 +76,20 @@
 
 .left-context {
   width: 200px;
-  height: 30px;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .left-context p {
   margin-left: 20px;
   height: 30px;
   line-height: 30px;
+}
+
+.left-context button{
+  margin: 0 5px !important;
+  margin-bottom: 5px !important;
 }
 
 .chat-context {
@@ -123,6 +132,14 @@
   width: 300px;
   margin-left: 120px;
 }
+
+.front{
+  z-index: 100;
+}
+
+.back{
+  z-index: 99;
+}
 </style>
 
 <script>
@@ -139,7 +156,10 @@ export default {
       ws: null,
       users: [],
       infos: [],
-      message: ''
+      message: '',
+      chatWay: 'front',
+      fileWay: 'back',
+      wayMode: true
     }
   },
   created() {
@@ -233,6 +253,27 @@ export default {
         let scrollEl = this.$refs.messages1;
         scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: 'smooth' });
       });
+    },
+    gohome(){
+      this.$router.push('/home')
+    },goSetting(){
+      this.$router.push('/setting')
+    },
+    goSearch(){
+      this.$router.push('/search')
+    },
+    clearChat(){
+      this.infos = []
+    },changeWay(){
+      if(this.wayMode){
+        this.chatWay = 'back'
+        this.fileWay = 'front'
+        this.wayMode = false
+      }else{
+        this.chatWay = 'front'
+        this.fileWay = 'back'
+        this.wayMode = true
+      }
     }
   }
 }

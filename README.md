@@ -26,6 +26,12 @@
 <details><summary>设置</summary>
 <img src="./文档/图片/设置.jpeg"/>
 </details>
+<details><summary>检索工具</summary>
+<img src="./文档/图片/检索工具.png"/>
+</details>
+<details><summary>内容检索</summary>
+<img src="./文档/图片/内容检索.png"/>
+</details>
 
 ##### 预计实现功能
 - [X] 用户登录
@@ -76,6 +82,7 @@
 ##### 可改进的地方
 - 内容检索的时候，可以使用多线程进行并发操作，还可以在前面页检测到就直接返回，不用等待所有的文件都检索完毕
 - 可以增加文件移动的功能（没增加之前只能先下载、再重命名、再上传）
+- 将来也许可以拓展支持FTP文件服务
 
 ##### V计划
 - https://github.com/tyza66/ProjectV

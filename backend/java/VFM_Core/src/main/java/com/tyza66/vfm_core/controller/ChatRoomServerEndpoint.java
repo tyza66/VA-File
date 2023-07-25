@@ -49,6 +49,7 @@ public class ChatRoomServerEndpoint {
     @OnClose
     public void onClose(Session session, @PathParam("userName") String userName) {
         livingSessions.remove(session.getId());
+        log.info("用户 {} 已断开连接", userName);
         sendMessageToAll(userName + " 退出聊天室");
     }
 
