@@ -85,7 +85,7 @@
           <el-button type="default" size="small">删除</el-button>
           <el-button type="default" size="small">命名</el-button>
           <el-button type="default" size="small" v-show="item.type =='file'">下载</el-button>
-          <el-button type="default" size="small" v-show="item.type =='folder'">设为根路径</el-button>
+          <el-button type="default" size="small" v-show="item.type =='folder'" @click="setPath(item.prototype)">设为根路径</el-button>
         </el-col>
       </el-row>
     </div>
@@ -343,7 +343,9 @@ export default {
       }).catch(err => {
         console.log(err);
       })
-    } 
+    },setPath(path){
+      this.partPath = path
+    }
   }
 }
 </script>
