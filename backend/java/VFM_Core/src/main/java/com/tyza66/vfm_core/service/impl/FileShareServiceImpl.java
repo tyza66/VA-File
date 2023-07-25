@@ -3,6 +3,11 @@ package com.tyza66.vfm_core.service.impl;
 import com.tyza66.vfm_core.pojo.FileShare;
 import com.tyza66.vfm_core.pojo.VfmUser;
 import com.tyza66.vfm_core.service.FileShareService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+
+import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Author: tyza66
@@ -11,10 +16,17 @@ import com.tyza66.vfm_core.service.FileShareService;
  **/
 
 public class FileShareServiceImpl implements FileShareService {
-
+    @Resource
+    RedisTemplate redisTemplate;
 
     @Override
     public boolean addFileToShareList(FileShare fileShare, VfmUser vfmUser) {
-        return false;
+        String value = (String) redisTemplate.opsForValue().get("fileShare");
+        if (value == null) {
+            value = "";
+        }
+        String putString = value + "";
+        redisTemplate.opsForValue().set("fileShare", putString,1, TimeUnit.DAYS);
+        return true;
     }
 }

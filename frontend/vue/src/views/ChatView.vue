@@ -21,6 +21,7 @@
         <el-button type="default" @click="goSearch()">文件检索</el-button>
         <el-button type="default" @click="changeWay()">切换优先</el-button>
         <el-button type="default" @click="clearChat()">清除聊天</el-button>
+        <el-button type="default" @click="shareFile()">发布文件</el-button>
       </div>
     </div>
     <div class="chat-context" :class="chatWay" ref="chat">
@@ -274,6 +275,8 @@ export default {
         this.fileWay = 'back'
         this.wayMode = true
       }
+    },shareFile(){
+      
     }
   }
 }
