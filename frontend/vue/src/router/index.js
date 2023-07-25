@@ -6,7 +6,7 @@ import SearchView from '../views/SearchView.vue'
 import ChatView from '../views/ChatView.vue'
 import TextView from '../views/TextView.vue'
 import DocxView from '../views/DocxView.vue'
-
+import PDFView from '../views/PDFView.vue'
 
 const routes = [
   {

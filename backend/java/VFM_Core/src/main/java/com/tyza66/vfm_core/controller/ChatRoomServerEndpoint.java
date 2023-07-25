@@ -1,5 +1,6 @@
 package com.tyza66.vfm_core.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -17,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint("/ws/chatRoom/{userName}") //WebSocket客户端建立连接的地址
 @Component
+@Slf4j
 public class ChatRoomServerEndpoint {
 
     //存活的session集合（使用线程安全的map保存）
@@ -25,6 +27,7 @@ public class ChatRoomServerEndpoint {
     @OnOpen
     public void onOpen(Session session, @PathParam("userName") String userName) {
         livingSessions.put(session.getId(), session);
+        log.info("用户 {} 已连接", userName);
         sendMessageToAll(userName + " 加入聊天室");
     }
 
@@ -38,7 +41,7 @@ public class ChatRoomServerEndpoint {
     //发生错误的回调方法
     @OnError
     public void onError(Session session, Throwable error) {
-        System.out.println("发生错误");
+        log.info("用户 {} 发生错误", session.getId());
         error.printStackTrace();
     }
 
