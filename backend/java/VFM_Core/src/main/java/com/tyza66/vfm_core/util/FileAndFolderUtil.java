@@ -112,7 +112,9 @@ public class FileAndFolderUtil {
             String size = "0";
             if (fileIn.isFile()) {
                 end = name.substring(name.lastIndexOf(".") + 1);
-                name = name.substring(0, name.lastIndexOf("."));
+                if(name.contains(".")) {
+                    name = name.substring(0, name.lastIndexOf("."));
+                }
                 size = String.valueOf(fileIn.length());
             }
             String type = fileIn.isFile() ? "file" : "folder";
@@ -236,7 +238,9 @@ public class FileAndFolderUtil {
                 String size = "0";
                 if (fileIn.isFile()) {
                     end = name.substring(name.lastIndexOf(".") + 1);
-                    name = name.substring(0, name.lastIndexOf("."));
+                    if(name.contains(".")) {
+                        name = name.substring(0, name.lastIndexOf("."));
+                    }
                     size = String.valueOf(fileIn.length());
                 }
                 String type = fileIn.isFile() ? "file" : "folder";
@@ -307,7 +311,9 @@ public class FileAndFolderUtil {
                 String size = "0";
                 if (fileIn.isFile()) {
                     end = name.substring(name.lastIndexOf(".") + 1);
-                    name = name.substring(0, name.lastIndexOf("."));
+                    if(name.contains(".")) {
+                        name = name.substring(0, name.lastIndexOf("."));
+                    }
                     size = String.valueOf(fileIn.length());
                 }
                 String type = fileIn.isFile() ? "file" : "folder";
