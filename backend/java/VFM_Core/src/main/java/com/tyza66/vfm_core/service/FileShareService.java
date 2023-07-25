@@ -1,5 +1,8 @@
 package com.tyza66.vfm_core.service;
 
+import com.tyza66.vfm_core.pojo.FileShare;
+import com.tyza66.vfm_core.pojo.VfmUser;
+
 /**
  * Author: tyza66
  * Date: 2023/7/25 16:53
@@ -7,4 +10,6 @@ package com.tyza66.vfm_core.service;
  **/
 
 public interface FileShareService {
+
+    boolean addFileToShareList(FileShare fileShare, VfmUser vfmUser);
 }

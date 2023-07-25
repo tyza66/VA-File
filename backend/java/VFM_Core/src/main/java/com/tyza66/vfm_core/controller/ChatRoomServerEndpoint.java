@@ -28,7 +28,7 @@ public class ChatRoomServerEndpoint {
     public void onOpen(Session session, @PathParam("userName") String userName) {
         livingSessions.put(session.getId(), session);
         log.info("用户 {} 已连接", userName);
-        sendMessageToAll(userName + " 加入聊天室");
+        sendMessageToAll(userName + " 加入内部聊天室");
     }
 
     //收到客户端消息的回调方法
@@ -50,7 +50,7 @@ public class ChatRoomServerEndpoint {
     public void onClose(Session session, @PathParam("userName") String userName) {
         livingSessions.remove(session.getId());
         log.info("用户 {} 已断开连接", userName);
-        sendMessageToAll(userName + " 退出聊天室");
+        sendMessageToAll(userName + " 退出内部聊天室");
     }
 
 
