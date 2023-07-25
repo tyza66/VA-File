@@ -24,6 +24,7 @@
         </el-form-item>
       </div>
       <el-button class="sb" type="default" @click="search()">搜索</el-button>
+      <el-button class="sb" type="default" @click="clear()">清除</el-button>
       <el-button class="rb" type="default" size="small" @click="goSetting()">设置</el-button>
       <el-button class="rb" type="default" size="small" @click="goHome()">返回主页</el-button>
     </div>
@@ -48,10 +49,10 @@
           操作
         </el-col>
       </el-row>
-      <el-row class="item-one" v-for="(item,index) in context" :key="index">
+      <el-row class="item-one" v-for="(item, index) in context" :key="index">
         <el-col class="icon" :span="1">
-          <svg v-show="item.type == 'folder'" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2324" width="30"
-            height="30">
+          <svg v-show="item.type == 'folder'" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+            p-id="2324" width="30" height="30">
             <path
               d="M855.04 385.024q19.456 2.048 38.912 10.24t33.792 23.04 21.504 37.376 2.048 54.272q-2.048 8.192-8.192 40.448t-14.336 74.24-18.432 86.528-19.456 76.288q-5.12 18.432-14.848 37.888t-25.088 35.328-36.864 26.112-51.2 10.24l-567.296 0q-21.504 0-44.544-9.216t-42.496-26.112-31.744-40.96-12.288-53.76l0-439.296q0-62.464 33.792-97.792t95.232-35.328l503.808 0q22.528 0 46.592 8.704t43.52 24.064 31.744 35.84 12.288 44.032l0 11.264-53.248 0q-40.96 0-95.744-0.512t-116.736-0.512-115.712-0.512-92.672-0.512l-47.104 0q-26.624 0-41.472 16.896t-23.04 44.544q-8.192 29.696-18.432 62.976t-18.432 61.952q-10.24 33.792-20.48 65.536-2.048 8.192-2.048 13.312 0 17.408 11.776 29.184t29.184 11.776q31.744 0 43.008-39.936l54.272-198.656q133.12 1.024 243.712 1.024l286.72 0z"
               p-id="2325"></path>
@@ -67,25 +68,26 @@
           </svg>
         </el-col>
         <el-col class="type" :span="2">
-          {{ item.type == 'file' ? '文件' : '文件夹'  }}
+          {{ item.type == 'file' ? '文件' : '文件夹' }}
         </el-col>
         <el-col class="name" :span="5">
-          {{ item.name + (item.type=="file"?("."+ item.end):"") }}
+          {{ item.name + (item.type == "file" ? ("." + item.end) : "") }}
         </el-col>
         <el-col class="size" :span="3">
-          {{ item.size  }}
+          {{ item.size }}
         </el-col>
         <el-col class="path" :span="5">
           {{ item.prototype }}
         </el-col>
         <el-col class="control" :span="8">
-          <el-button type="default" size="small" v-show="item.type =='file'">预览</el-button>
-          <el-button type="default" size="small" v-show="item.type =='folder'">打开</el-button>
+          <el-button type="default" size="small" v-show="item.type == 'file'">预览</el-button>
+          <el-button type="default" size="small" v-show="item.type == 'folder'">打开</el-button>
           <el-button type="default" size="small">前往</el-button>
-          <el-button type="default" size="small">删除</el-button>
+          <el-button type="default" size="small" @click="delete1(item.prototype,item.type)">删除</el-button>
           <el-button type="default" size="small">命名</el-button>
-          <el-button type="default" size="small" v-show="item.type =='file'">下载</el-button>
-          <el-button type="default" size="small" v-show="item.type =='folder'" @click="setPath(item.prototype)">设为根路径</el-button>
+          <el-button type="default" size="small" v-show="item.type == 'file'">下载</el-button>
+          <el-button type="default" size="small" v-show="item.type == 'folder'"
+            @click="setPath(item.prototype)">设为根路径</el-button>
         </el-col>
       </el-row>
     </div>
@@ -189,6 +191,8 @@
 
 <script>
 import { request } from '@/utils/request';
+import { ElMessageBox } from 'element-plus'
+
 
 export default {
   name: 'SearchView',
@@ -262,7 +266,7 @@ export default {
         }).catch(err => {
           console.log(err);
         })
-      } else if(this.searchType == '内容搜索') {
+      } else if (this.searchType == '内容搜索') {
         request.get('/search/byContent', {
           params: {
             "partPath": this.partPath,
@@ -287,14 +291,14 @@ export default {
     },
     goHome() {
       this.$router.push('/home')
-    },sortContent(way) {
+    }, sortContent(way) {
       if (way == "type") {
         var temp = []
         for (var i in this.context) {
           console.log(this.basePath)
           //将地址位置格式化
-          this.context[i].prototype = this.context[i].prototype.replaceAll("\\","/")
-          this.context[i].prototype = this.context[i].prototype.replace(this.basePath,"")
+          this.context[i].prototype = this.context[i].prototype.replaceAll("\\", "/")
+          this.context[i].prototype = this.context[i].prototype.replace(this.basePath, "")
           if (this.context[i].type == "folder") {
             temp.push(this.context[i])
           }
@@ -306,7 +310,7 @@ export default {
         }
         this.context = temp
       }
-    },checkRoot() {
+    }, checkRoot() {
       var that = this;
       request.get('/file/checkRoot', {
         headers: {
@@ -343,8 +347,89 @@ export default {
       }).catch(err => {
         console.log(err);
       })
-    },setPath(path){
+    }, setPath(path) {
       this.partPath = path
+    }, clear() {
+      this.partPath = "/"
+      this.searchKey = ""
+      this.context = []
+    }, delete1(name, type) {
+      //console.log(name, type);
+      ElMessageBox.confirm(
+        '确定要删除吗?',
+        '删除',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(() => {
+          if (type == "file") {
+            //console.log(this.nowPath.substring(1) + name);
+            request.get("/file/deleteFile", {
+              params: {
+                "partPath": name.substring(1)
+              },
+              headers: {
+                "satoken": this.getCookie("satoken")
+              }
+            }).then(res => {
+              if (res.code == 201) {
+                return
+              }
+              if (res.code == 200) {
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                })
+                this.search()
+              } else {
+                this.$message({
+                  message: '删除失败',
+                  type: 'error'
+                })
+                this.search()
+              }
+            }).catch(err => {
+              console.log(err);
+            })
+          } else if (type = "folder") {
+            request.get("/file/deleteFolder", {
+              params: {
+                "partPath": name.substring(1)
+              },
+              headers: {
+                "satoken": this.getCookie("satoken")
+              }
+            }).then(res => {
+              if (res.code == 201) {
+                return
+              }
+              if (res.code == 200) {
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                })
+                this.search()
+              } else {
+                this.$message({
+                  message: '删除失败',
+                  type: 'error'
+                })
+                this.search()
+              }
+            }).catch(err => {
+              console.log(err);
+            })
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
     }
   }
 }
