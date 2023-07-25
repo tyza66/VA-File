@@ -79,13 +79,13 @@
           {{ item.prototype }}
         </el-col>
         <el-col class="control" :span="8">
-          <el-button type="default" size="small">预览</el-button>
-          <el-button type="default" size="small">打开</el-button>
+          <el-button type="default" size="small" v-show="item.type =='file'">预览</el-button>
+          <el-button type="default" size="small" v-show="item.type =='folder'">打开</el-button>
           <el-button type="default" size="small">前往</el-button>
           <el-button type="default" size="small">删除</el-button>
           <el-button type="default" size="small">命名</el-button>
-          <el-button type="default" size="small">下载</el-button>
-          <el-button type="default" size="small">设为根路径</el-button>
+          <el-button type="default" size="small" v-show="item.type =='file'">下载</el-button>
+          <el-button type="default" size="small" v-show="item.type =='folder'">设为根路径</el-button>
         </el-col>
       </el-row>
     </div>
@@ -200,11 +200,13 @@ export default {
       searchMode: '深度搜索',
       partPath: '/',
       searchKey: '',
-      context: []
+      context: [],
+      basePath: "/",
     }
   },
   created() {
     this.checkLogin()
+    this.checkRoot()
   },
   methods: {
     checkLogin() {
@@ -289,6 +291,10 @@ export default {
       if (way == "type") {
         var temp = []
         for (var i in this.context) {
+          console.log(this.basePath)
+          //将地址位置格式化
+          this.context[i].prototype = this.context[i].prototype.replaceAll("\\","/")
+          this.context[i].prototype = this.context[i].prototype.replace(this.basePath,"")
           if (this.context[i].type == "folder") {
             temp.push(this.context[i])
           }
@@ -300,7 +306,44 @@ export default {
         }
         this.context = temp
       }
-    }
+    },checkRoot() {
+      var that = this;
+      request.get('/file/checkRoot', {
+        headers: {
+          "satoken": this.getCookie("satoken")
+        }
+      }
+      ).then(res => {
+        if (res.code == 201) {
+          return
+        }
+        if (res.code == 200) {
+          // this.$message({
+          //   message: '物理文件根路径检查成功',
+          //   type: 'success'
+          // })
+          request.get("/location/get", {
+            headers: {
+              "satoken": this.getCookie("satoken")
+            }
+          }).then(res => {
+            if (res.code == 200) {
+              that.basePath = res.data
+            }
+            //console.log(that.basePath);
+          }).catch(err => {
+            console.log(err);
+          })
+        } else {
+          this.$message({
+            message: '物理文件根路径检查失败，请前往设置中进行修改',
+            type: 'error'
+          })
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    } 
   }
 }
 </script>
