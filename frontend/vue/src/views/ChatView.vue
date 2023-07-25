@@ -16,19 +16,21 @@
         <h2 style="text-align:center;font-family:'宋体';height:50px;line-height:50px;">操作</h2>
       </div>
       <div class="left-context">
-        
+
       </div>
     </div>
     <div class="chat-context">
       <div class="title" style="text-align:center;font-family:'宋体';height:50px;line-height:50px;">
         <h2>内部聊天</h2>
       </div>
-      <div class="show">
-        <div style="heigth:30px;line-heigth:30px;margin-left: 15px;" v-for="(one,index) in infos" :key="index">{{one}}</div>
+      <div class="show" ref="messages1">
+        <div style="heigth:30px;line-heigth:30px;margin-left: 15px;" v-for="(one, index) in infos" :key="index">{{ one }}
+        </div>
       </div>
       <div class="submit">
         <el-form-item>
-          <span><el-input v-model="message" class="input"></el-input></span><el-button type="default" class="send" @click="send()">发送</el-button>
+          <span class="input1"><el-input v-model="message" class="input"></el-input></span><el-button type="default"
+            class="send" @click="send()">发送</el-button>
         </el-form-item>
       </div>
     </div>
@@ -103,11 +105,23 @@
   background-color: #f5f5f5;
 }
 
-.input{
+.input {
+  display: inline-block;
+  width: 300px;
+}
+
+.send {
   display: inline-block;
 }
-.send{
+
+.el-input__inner {
+  width: 300px;
+}
+
+.input1 {
   display: inline-block;
+  width: 300px;
+  margin-left: 120px;
 }
 </style>
 
@@ -131,7 +145,7 @@ export default {
   created() {
     this.checkLogin()
     this.joinChat()
-  },beforeDestroy(){
+  }, beforeDestroy() {
     this.wx.close()
   },
   methods: {
@@ -194,6 +208,7 @@ export default {
           //接收到消息的回调方法
           that.ws.onmessage = function (event) {
             that.infos.push(event.data)
+            that.messageButtom1()
           }
 
           //连接发生错误的回调方法
@@ -209,10 +224,15 @@ export default {
       }).catch(err => {
         console.log(err);
       })
-    },send(){
+    }, send() {
       var that = this
       that.ws.send(that.message)
       that.message = ''
+    }, messageButtom1() {
+      this.$nextTick(() => {
+        let scrollEl = this.$refs.messages1;
+        scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: 'smooth' });
+      });
     }
   }
 }
