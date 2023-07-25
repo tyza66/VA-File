@@ -5,7 +5,31 @@
     </div>
     <div class="left">
       <div class="title">
-        <h2 style="text-align:center;font-family:'宋体';height:50px;line-height:50px;">在线用户</h2>
+        <h2 style="text-align:center;font-family:'宋体';height:50px;line-height:50px;">我的信息</h2>
+      </div>
+      <div class="left-context">
+        <p>用户名：{{ user.vfmuUsername }}</p>
+      </div>
+    </div>
+    <div class="left2">
+      <div class="title">
+        <h2 style="text-align:center;font-family:'宋体';height:50px;line-height:50px;">操作</h2>
+      </div>
+      <div class="left-context">
+        
+      </div>
+    </div>
+    <div class="chat-context">
+      <div class="title" style="text-align:center;font-family:'宋体';height:50px;line-height:50px;">
+        <h2>内部聊天</h2>
+      </div>
+      <div class="show">
+        <div style="heigth:30px;line-heigth:30px;margin-left: 15px;" v-for="(one,index) in infos" :key="index">{{one}}</div>
+      </div>
+      <div class="submit">
+        <el-form-item>
+          <span><el-input v-model="message" class="input"></el-input></span><el-button type="default" class="send" @click="send()">发送</el-button>
+        </el-form-item>
       </div>
     </div>
 
@@ -23,7 +47,16 @@
   left: 0;
   top: 120px;
   width: 200px;
-  height: 500px;
+  height: 90px;
+  background-color: #f5f5f5;
+}
+
+.left2 {
+  position: fixed;
+  left: 0;
+  top: 220px;
+  width: 200px;
+  height: 90px;
   background-color: #f5f5f5;
 }
 
@@ -31,9 +64,50 @@
   position: fixed;
   right: 0;
   top: 120px;
-  width: 200px;
+  width: 600px;
   height: 500px;
   background-color: #f5f5f5;
+}
+
+.left-context {
+  width: 200px;
+  height: 30px;
+  overflow: auto;
+}
+
+.left-context p {
+  margin-left: 20px;
+  height: 30px;
+  line-height: 30px;
+}
+
+.chat-context {
+  position: fixed;
+  left: 230px;
+  top: 120px;
+  width: 600px;
+  height: 500px;
+  background-color: #f5f5f5;
+}
+
+.chat-context .show {
+  width: 600px;
+  height: 400px;
+  background-color: #f5f5f5;
+  overflow: auto;
+}
+
+.chat-context .submit {
+  width: 600px;
+  height: 50px;
+  background-color: #f5f5f5;
+}
+
+.input{
+  display: inline-block;
+}
+.send{
+  display: inline-block;
 }
 </style>
 
@@ -48,12 +122,17 @@ export default {
     return {
       socketUrl: 'ws://127.0.0.1:9090/ws/chatRoom/',
       user: {},
-      ws: null
+      ws: null,
+      users: [],
+      infos: [],
+      message: ''
     }
   },
   created() {
     this.checkLogin()
     this.joinChat()
+  },beforeDestroy(){
+    this.wx.close()
   },
   methods: {
     checkLogin() {
@@ -114,8 +193,7 @@ export default {
 
           //接收到消息的回调方法
           that.ws.onmessage = function (event) {
-            console.log('接收到内容：' + event.data)
-            
+            that.infos.push(event.data)
           }
 
           //连接发生错误的回调方法
@@ -131,6 +209,10 @@ export default {
       }).catch(err => {
         console.log(err);
       })
+    },send(){
+      var that = this
+      that.ws.send(that.message)
+      that.message = ''
     }
   }
 }
