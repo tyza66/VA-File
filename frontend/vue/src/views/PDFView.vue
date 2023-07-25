@@ -8,7 +8,7 @@
 import { request } from '@/utils/request';
 
 export default {
-  name: 'TextView',
+  name: 'PDFView',
   components: {
   },
   data() {

@@ -5,6 +5,8 @@ import SettingView from '../views/SettingView.vue'
 import SearchView from '../views/SearchView.vue'
 import ChatView from '../views/ChatView.vue'
 import TextView from '../views/TextView.vue'
+import DocxView from '../views/DocxView.vue'
+
 
 const routes = [
   {
@@ -36,6 +38,14 @@ const routes = [
     path: '/text',
     name: 'text',
     component: TextView
+  },{
+    path: '/docx',
+    name: 'docx',
+    component: DocxView
+  },{
+    path: '/pdf',
+    name: 'pdf',
+    component: PDFView
   }
 
 ]
