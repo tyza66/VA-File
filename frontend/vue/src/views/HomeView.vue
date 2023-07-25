@@ -5,13 +5,14 @@
       <p>当前子路径>{{ nowPath }}</p>
       <el-button size="small" type="link" @click="set()">设置</el-button>
       <el-button size="small" type="link" @click="logout()">退出登录</el-button>
+      <el-button size="small" type="link" @click="chat()">文件分享</el-button>
+      <el-button size="small" type="link" @click="search()">检索工具</el-button>
       <el-button size="small" type="link" @click="backRoom()">上级目录</el-button>
       <el-button size="small" type="link" @click="rootRoom()">回根目录</el-button>
       <el-button size="small" type="link" @click="uploadFile()">上传文件</el-button>
       <el-button size="small" type="link" @click="createFile()">新建文件</el-button>
       <el-button size="small" type="link" @click="createFolder()">建文件夹</el-button>
       <el-button size="small" type="link" @click="reflash()">刷新当前</el-button>
-      <el-button size="small" type="link" @click="search()">检索工具</el-button>
     </div>
     <div class="main">
       <div class="file-and-folder" v-for="(item, index) in context" :key="index">
@@ -658,6 +659,8 @@ export default {
       } else {
         this.nowPath = "/"
       }
+    },chat(){
+      this.$router.push('/chat')
     }
   }
 }

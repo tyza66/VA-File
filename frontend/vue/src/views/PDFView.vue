@@ -8,7 +8,7 @@
 import { request } from '@/utils/request';
 
 export default {
-  name: 'SearchView',
+  name: 'TextView',
   components: {
   },
   data() {

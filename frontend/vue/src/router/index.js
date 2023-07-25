@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import SettingView from '../views/SettingView.vue'
 import SearchView from '../views/SearchView.vue'
+import ChatView from '../views/ChatView.vue'
+import TextView from '../views/TextView.vue'
 
 const routes = [
   {
@@ -26,7 +28,16 @@ const routes = [
     path: '/search',
     name: 'search',
     component: SearchView
+  },{
+    path: '/chat',
+    name: 'chat',
+    component: ChatView
+  },{
+    path: '/text',
+    name: 'text',
+    component: TextView
   }
+
 ]
 
 const router = createRouter({

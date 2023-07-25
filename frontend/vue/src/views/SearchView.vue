@@ -81,7 +81,7 @@
         </el-col>
         <el-col class="control" :span="8">
           <el-button type="default" size="small" v-show="item.type == 'file'">预览</el-button>
-          <el-button type="default" size="small" v-show="item.type == 'folder'">打开</el-button>
+          <el-button type="default" size="small" v-show="item.type == 'folder'" @click="openFolder(item.prototype)">打开</el-button>
           <el-button type="default" size="small" @click="goParent(item.prototype)">前往</el-button>
           <el-button type="default" size="small" @click="delete1(item.prototype, item.type)">删除</el-button>
           <el-button type="default" size="small" @click="rename(item.prototype, item.type)">命名</el-button>
@@ -499,6 +499,8 @@ export default {
       window.open(path)
     },goParent(path){
       window.location.href = "http://localhost:8080/home?path=" + path.substring(0, path.lastIndexOf("/"))
+    },openFolder(path){
+      window.location.href = "http://localhost:8080/home?path=" + path
     }
   }
 }
