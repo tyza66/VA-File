@@ -39,7 +39,7 @@
         <div class="conf">
           <el-button size="small" link type="default" v-show="item.type == 'folder'"
             @click="openFolder(item.name)">打开</el-button>
-          <el-button size="small" link type="default" v-show="item.type == 'file'">预览</el-button>
+          <el-button size="small" link type="default" v-show="item.type == 'file'" @click="lookup(item.prototype)">预览</el-button>
           <el-button size="small" link type="default" v-show="item.type != 'folder'"
             @click="download(item.name + '.' + item.end)">下载</el-button>
           <el-button size="small" link type="default" disabled v-show="item.type == 'folder'">下载</el-button>
@@ -320,6 +320,7 @@ export default {
         var temp = []
         for (var i in this.context) {
           if (this.context[i].type == "folder") {
+            //console.log(this.context[i].prototype);
             temp.push(this.context[i])
           }
         }
@@ -661,6 +662,11 @@ export default {
       }
     },chat(){
       this.$router.push('/chat')
+    },lookup(path){
+      path = path.replaceAll("\\", "/")
+      path = path.replace(this.basePath, "")
+      console.log(path)
+      this.$router.push('/online?path='+path.substring(1))
     }
   }
 }
