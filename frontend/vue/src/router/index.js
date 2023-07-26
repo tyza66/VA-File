@@ -4,9 +4,7 @@ import LoginView from '../views/LoginView.vue'
 import SettingView from '../views/SettingView.vue'
 import SearchView from '../views/SearchView.vue'
 import ChatView from '../views/ChatView.vue'
-import TextView from '../views/TextView.vue'
-import DocxView from '../views/DocxView.vue'
-import PDFView from '../views/PDFView.vue'
+import OnlineView from '../views/OnlineView.vue'
 
 const routes = [
   {
@@ -35,17 +33,9 @@ const routes = [
     name: 'chat',
     component: ChatView
   },{
-    path: '/text',
-    name: 'text',
-    component: TextView
-  },{
-    path: '/docx',
-    name: 'docx',
-    component: DocxView
-  },{
-    path: '/pdf',
-    name: 'pdf',
-    component: PDFView
+    path: '/online',
+    name: 'online',
+    component: OnlineView
   }
 
 ]

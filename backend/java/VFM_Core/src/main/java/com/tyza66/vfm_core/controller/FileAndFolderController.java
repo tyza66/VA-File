@@ -288,7 +288,14 @@ public class FileAndFolderController {
 
             //在这里定义不同的文件类型响应
             String type = file.getName().substring(file.getName().lastIndexOf(".") + 1).toLowerCase();
-            log.info("文件类型为：" + type);
+            //log.info("文件类型为：" + type);
+
+            //如果是txt文件
+            if (type.equals("txt")) {
+                response.setContentType("text/plain");
+                //设置编码集为utf8
+                response.setCharacterEncoding("UTF-8");
+            }
             //如果是jepg图片
             if (type.equals("jepg")) {
                 response.setContentType("image/jpeg");
@@ -301,6 +308,27 @@ public class FileAndFolderController {
             if (type.equals("pdf")) {
                 response.setContentType("application/pdf");
             }
+            //如果是word
+            if (type.equals("doc")) {
+                response.setContentType("application/msword");
+            }
+            //如果是excel
+            if (type.equals("xls")) {
+                response.setContentType("application/vnd.ms-excel");
+            }
+            //如果是ppt
+            if (type.equals("ppt")) {
+                response.setContentType("application/vnd.ms-powerpoint");
+            }
+            //如果是mp4
+            if (type.equals("mp4")) {
+                response.setContentType("video/mp4");
+            }
+            //如果是mp3
+            if (type.equals("mp3")) {
+                response.setContentType("audio/mp3");
+            }
+
 
             byte[] buffer = new byte[1024];
             int bytesRead = -1;
