@@ -30,6 +30,7 @@ public class FileShareController {
     @ApiOperation("分享文件")
     @PostMapping ("/file")
     public JSON shareFile(@RequestBody FileShare fileShare) {
+        System.out.println(fileShare);
         JSONObject obj = JSONUtil.createObj();
         if (StpUtil.isLogin()) {
             if (fileShareService.addFileToShareList(((VfmUser) StpUtil.getSession().get("user")).getVfmuUsername(), fileShare.getName(), fileShare.getDownloadUrl())) {

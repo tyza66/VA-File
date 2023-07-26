@@ -22,6 +22,7 @@
         <el-button type="default" @click="changeWay()">切换优先</el-button>
         <el-button type="default" @click="clearChat()">清除聊天</el-button>
         <el-button type="default" @click="shareFile()">发布文件</el-button>
+        <el-button type="default" @click="reflushFile()">刷新文件</el-button>
       </div>
     </div>
     <div class="chat-context" :class="chatWay" ref="chat">
@@ -43,6 +44,11 @@
     <div class="right" :class="fileWay" ref="file">
       <div class="title" style="text-align:center;font-family:'宋体';height:50px;line-height:50px;">
         <h2>文件栈</h2>
+      </div>
+      <div class="show" ref="messages2">
+        <div style="heigth:30px;line-heigth:30px;margin-left: 15px;" v-for="(one, index) in files" :key="index">
+          {{ one.shareMan }}:<a href="#" @click="openURL(one.downloadUrl)">{{ one.name }}</a>
+        </div>
       </div>
     </div>
   </div>
@@ -88,7 +94,7 @@
   line-height: 30px;
 }
 
-.left-context button{
+.left-context button {
   margin: 0 5px !important;
   margin-bottom: 5px !important;
 }
@@ -134,17 +140,25 @@
   margin-left: 120px;
 }
 
-.front{
+.front {
   z-index: 100;
 }
 
-.back{
+.back {
   z-index: 99;
+}
+
+.right .show {
+  width: 600px;
+  height: 450px;
+  background-color: #f5f5f5;
+  overflow: auto;
 }
 </style>
 
 <script>
 import { request } from '@/utils/request';
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default {
   name: 'ChatView',
@@ -160,12 +174,14 @@ export default {
       message: '',
       chatWay: 'front',
       fileWay: 'back',
-      wayMode: true
+      wayMode: true,
+      files: []
     }
   },
   created() {
     this.checkLogin()
     this.joinChat()
+    this.reflushFile()
   }, beforeDestroy() {
     this.wx.close()
   },
@@ -255,28 +271,92 @@ export default {
         scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: 'smooth' });
       });
     },
-    gohome(){
+    gohome() {
       this.$router.push('/home')
-    },goSetting(){
+    }, goSetting() {
       this.$router.push('/setting')
     },
-    goSearch(){
+    goSearch() {
       this.$router.push('/search')
     },
-    clearChat(){
+    clearChat() {
       this.infos = []
-    },changeWay(){
-      if(this.wayMode){
+    }, changeWay() {
+      if (this.wayMode) {
         this.chatWay = 'back'
         this.fileWay = 'front'
         this.wayMode = false
-      }else{
+      } else {
         this.chatWay = 'front'
         this.fileWay = 'back'
         this.wayMode = true
       }
-    },shareFile(){
-      
+    }, reflushFile() {
+      request.get("/share/all", {
+        headers: {
+          "satoken": this.getCookie("satoken")
+        }
+      }).then(res => {
+        if (res.code == 200) {
+          this.files = res.data
+          this.messageButtom2()
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    openURL(url) {
+      window.open(url);
+    }, messageButtom2() {
+      this.$nextTick(() => {
+        let scrollEl = this.$refs.messages2;
+        scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: 'smooth' });
+      });
+    }, shareFile() {
+      ElMessageBox.prompt('请输入分享名称', 'Tip', {
+        confirmButtonText: '下一步',
+        cancelButtonText: '取消'
+      })
+        .then(({ value }) => {
+          var value1 = value
+          ElMessageBox.prompt('请输入分享地址', 'Tip', {
+            confirmButtonText: '提交',
+            cancelButtonText: '取消'
+          })
+            .then(({ value }) => {
+              console.log(value1, value);
+              request.post("/share/file",{
+                "downloadUrl": value,
+                "name": value1,
+              },{
+                headers: {
+                  "satoken": this.getCookie("satoken")
+                }
+              }).then(res => {
+                if (res.code == 200) {
+                  ElMessage({
+                    type: 'success',
+                    message: '分享成功',
+                  })
+                  this.reflushFile()
+                }
+              }).catch(err => {
+                console.log(err);
+              })
+            })
+            .catch(() => {
+              ElMessage({
+                type: 'info',
+                message: '取消分享',
+              })
+            })
+        })
+        .catch(() => {
+          ElMessage({
+            type: 'info',
+            message: '取消分享',
+          })
+        })
     }
   }
 }
