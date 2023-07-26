@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="header">
+    <div class="header2">
       <div class="header-part">
         <el-form-item label="搜索类型">
           <el-radio label="名称搜索" v-model="searchType" />
@@ -25,8 +25,8 @@
       </div>
       <el-button class="sb" type="default" @click="search()">搜索</el-button>
       <el-button class="sb" type="default" @click="clear()">清除</el-button>
-      <el-button class="rb" type="default" size="small" @click="goSetting()">设置</el-button>
-      <el-button class="rb" type="default" size="small" @click="goHome()">返回主页</el-button>
+      <el-button class="rb1" type="default" size="small" @click="goSetting()">设置</el-button>
+      <el-button class="rb1" type="default" size="small" @click="goHome()">返回主页</el-button>
     </div>
     <div class="items">
       <el-row class="item-one item-title">
@@ -80,7 +80,7 @@
           {{ item.prototype }}
         </el-col>
         <el-col class="control" :span="8">
-          <el-button type="default" size="small" v-show="item.type == 'file'">预览</el-button>
+          <el-button type="default" size="small" v-show="item.type == 'file'" @click="lookup(item.prototype)">预览</el-button>
           <el-button type="default" size="small" v-show="item.type == 'folder'"
             @click="openFolder(item.prototype)">打开</el-button>
           <el-button type="default" size="small" @click="goParent(item.prototype)">前往</el-button>
@@ -97,7 +97,7 @@
 </template>
 
 <style>
-.header {
+.header2 {
   height: 40px;
   background-color: #fff;
   box-shadow: 0 1px 3px rgba(26, 26, 26, .1);
@@ -105,7 +105,7 @@
   z-index: 100;
 }
 
-.header:hover {
+.header2:hover {
   background-color: #f4f4f4;
 }
 
@@ -130,7 +130,7 @@
   margin-top: -2px;
 }
 
-.rb {
+.rb1 {
   float: right;
   margin-left: 0px !important;
   margin-top: 8px;
@@ -503,6 +503,8 @@ export default {
       window.location.href = "http://localhost:8080/home?path=" + path.substring(0, path.lastIndexOf("/"))
     }, openFolder(path) {
       window.location.href = "http://localhost:8080/home?path=" + path
+    },lookup(path){
+      window.location.href = "http://localhost:8080/online?path=" + path.substring(1)
     }
   }
 }
