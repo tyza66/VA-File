@@ -18,6 +18,8 @@ export default {
   created() {
     this.checkLogin()
   },
+  mounted(){
+  },
   methods: {
     checkLogin() {
       request.get('/user/checkLogin',{

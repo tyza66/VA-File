@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import jdk.nashorn.internal.ir.CallNode;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -40,6 +41,7 @@ import java.util.List;
 @Api(tags = "文件和文件夹管理模块")
 @RestController
 @RequestMapping("/file")
+@Slf4j
 public class FileAndFolderController {
 
     @Autowired
@@ -273,16 +275,32 @@ public class FileAndFolderController {
     //如果是非特定格式的文件，直接进行下载
     @ApiOperation("在线预览文件")
     @GetMapping("/filesOnline")
-    public void downloadFile(@RequestParam String partPath, HttpServletResponse response) {
+    public void filesOnline(@RequestParam String partPath, HttpServletResponse response) {
         try {
             String baseLocation = vfmLocationService.getNowLocation();
             String filename = baseLocation + "/" + partPath;
             File file = new File(filename);
             FileInputStream inputStream = new FileInputStream(file);
 
-            response.setContentType("application/octet-stream");
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+            // 设置为 inline，让浏览器直接预览文件
+            response.setHeader("Content-Disposition", "inline; filename=\"" + file.getName() + "\"");
             response.setHeader("Content-Length", String.valueOf(file.length()));
+
+            //在这里定义不同的文件类型响应
+            String type = file.getName().substring(file.getName().lastIndexOf(".") + 1).toLowerCase();
+            log.info("文件类型为：" + type);
+            //如果是jepg图片
+            if (type.equals("jepg")) {
+                response.setContentType("image/jpeg");
+            }
+            //如果是png图片
+            if (type.equals("png")) {
+                response.setContentType("image/png");
+            }
+            //如果是pdf
+            if (type.equals("pdf")) {
+                response.setContentType("application/pdf");
+            }
 
             byte[] buffer = new byte[1024];
             int bytesRead = -1;
