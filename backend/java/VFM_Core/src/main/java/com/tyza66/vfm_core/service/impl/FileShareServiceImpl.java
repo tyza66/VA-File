@@ -8,6 +8,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -30,5 +32,18 @@ public class FileShareServiceImpl implements FileShareService {
         String putString = value + "|||" +"{shareMan="+shareMan+",name="+user+",file="+link+"}";
         redisTemplate.opsForValue().set("fileShare", putString,1, TimeUnit.DAYS);
         return true;
+    }
+
+    @Override
+    public List<FileShare> getAllFileShare() {
+        String value = (String) redisTemplate.opsForValue().get("fileShare");
+        ArrayList<FileShare> fileShares = new ArrayList<>();
+        String[] split = value.split("\\|\\|\\|");
+        //System.out.println(split.length);
+        for(int i=1;i<split.length;i++){
+            FileShare fileShare = new FileShare(split[i].split(",")[0].split("=")[1], split[i].split(",")[1].split("=")[1], split[i].split(",")[2].split("=")[1].substring(0,split[i].split(",")[2].split("=")[1].length()-1));
+            fileShares.add(fileShare);
+        }
+        return fileShares;
     }
 }

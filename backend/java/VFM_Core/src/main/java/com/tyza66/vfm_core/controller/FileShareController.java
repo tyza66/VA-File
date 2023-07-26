@@ -45,4 +45,19 @@ public class FileShareController {
         }
         return obj;
     }
+
+    @ApiOperation("获取所有分享")
+    @GetMapping("/all")
+    public JSON getAllFileShare() {
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            obj.set("code", 200);
+            obj.set("msg", "获取成功");
+            obj.set("data", fileShareService.getAllFileShare());
+        } else {
+            obj.set("code", 201);
+            obj.set("msg", "未登录");
+        }
+        return obj;
+    }
 }
