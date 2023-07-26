@@ -665,7 +665,7 @@ export default {
     },lookup(path){
       path = path.replaceAll("\\", "/")
       path = path.replace(this.basePath, "")
-      console.log(path)
+      //console.log(path)
       this.$router.push('/online?path='+path.substring(1))
     }
   }

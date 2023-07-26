@@ -5,9 +5,10 @@
       <el-button class="rb" type="default" size="small" @click="goSetting()">设置</el-button>
       <el-button class="rb" type="default" size="small" @click="goHome()">返回主页</el-button>
     </div>
-    <div class="main-all" v-show="nowPath != '/'">
+    <div class="main-all" v-show="(nowPath != '/' && (type == 'pdf' || type == 'txt' || type == 'png'))">
       <iframe :src="srcUrl" frameborder="0" width="100%" height="100%" style="height: 88.2vh;"></iframe>
     </div>
+
     <div v-show="nowPath == '/'">
       您未选择打开的文件，或您访问的文件不存在，请返回其他界面选择文件，或通过其他用户分享的连接访问文件。
     </div>
@@ -39,6 +40,8 @@
 
 <script>
 import { request } from '@/utils/request';
+import mammoth from 'mammoth.browser.js';
+
 
 export default {
   name: 'OnlineView',
@@ -47,7 +50,8 @@ export default {
   data() {
     return {
       nowPath: "/",
-      srcUrl: ""
+      srcUrl: "",
+      type: ""
     }
   },
   created() {
@@ -55,7 +59,7 @@ export default {
     this.checkPath()
   },
   mounted() {
-    
+
   },
   methods: {
     checkLogin() {
@@ -118,11 +122,13 @@ export default {
       //如果没有找到匹配的参数名，则返回false
       return false;
     }, reflash() {
-      var end = this.nowPath.substring(this.nowPath.lastIndexOf(".")+1, this.nowPath.length)
-      if(end=="docx"){
-          
+      var end = this.nowPath.substring(this.nowPath.lastIndexOf(".") + 1, this.nowPath.length)
+      this.type = end
+      if (end == "docx") {
+
+      } else {
+        this.srcUrl = "http://localhost:9090/file/filesOnline?partPath=" + this.nowPath
       }
-      this.srcUrl = "http://localhost:9090/file/filesOnline?partPath=" + this.nowPath
     }, goSetting() {
       this.$router.push('/setting')
     },
