@@ -18,6 +18,10 @@
 .header {
   height: 30px;
   line-height: 30px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(26, 26, 26, .1);
+  right: 0;
+  z-index: 100;
 }
 
 .main-all {
@@ -26,7 +30,10 @@
 }
 
 .rb {
+  float: right;
+  margin-left: 0px !important;
   margin-top: 3px;
+  margin-right: 10px;
 }
 </style>
 
@@ -48,6 +55,7 @@ export default {
     this.checkPath()
   },
   mounted() {
+    
   },
   methods: {
     checkLogin() {
@@ -83,7 +91,7 @@ export default {
       return null;
     }, checkPath() {
       var path = this.getQueryVariable("path")
-      console.log(path);
+      //console.log(path);
       if (path) {
         this.nowPath = path
         setTimeout(() => {
@@ -110,6 +118,10 @@ export default {
       //如果没有找到匹配的参数名，则返回false
       return false;
     }, reflash() {
+      var end = this.nowPath.substring(this.nowPath.lastIndexOf(".")+1, this.nowPath.length)
+      if(end=="docx"){
+          
+      }
       this.srcUrl = "http://localhost:9090/file/filesOnline?partPath=" + this.nowPath
     }, goSetting() {
       this.$router.push('/setting')
