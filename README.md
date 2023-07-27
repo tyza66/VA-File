@@ -42,6 +42,9 @@
 <details><summary>文章摘要</summary>
 <img src="./文档/图片/文章摘要.png"/>
 </details>
+<details><summary>智能问答</summary>
+<img src="./文档/图片/智能问答.png"/>
+</details>
 
 ##### 预计实现功能
 - [X] 用户登录
@@ -77,8 +80,6 @@
 - 基于ES的全文检索系统：需要用到Elasticsearch，还待研究
 - 基于大模型的文档知识问答系统：在MIND0中使用HuggingFace的GPT2.0进行实现
 
-##### 项目结构
-
 ##### 后端程序
 - 环境：Java8、MySQL、Redis、Docker、Redis
 - Java后端使用技术：Spring、Spring Boot、MyBatis、MyBatis Plus、Knife4j、Hutool、Sa-Token、Lettuce、POI、Socket
@@ -98,6 +99,7 @@
 - 内容检索的时候，可以使用多线程进行并发操作，还可以在前面页检测到就直接返回，不用等待所有的文件都检索完毕
 - 可以增加文件移动的功能（没增加之前只能先下载、再重命名、再上传）
 - 将来也许可以拓展支持FTP文件服务
+- 文档问答目前只支持英文，可以通过更换更好更先进的语言模型来实现中文的问答
 
 ##### V计划
 - https://github.com/tyza66/ProjectV

@@ -17,4 +17,6 @@ public class FileShare {
     String shareMan;
     String name;
     String downloadUrl;
+
+    boolean
 }

@@ -38,6 +38,9 @@ def img2text(path: str = None):
     image = Image.open(path)
     text = pytesseract.image_to_string(image, lang='chi_sim')
     #print(text)
+    file_handle = open(path.split(".")[0]+".txt", mode='w')
+    file_handle.write(text)
+    file_handle.close()
     return text
 
 
