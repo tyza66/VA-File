@@ -314,7 +314,7 @@ export default {
           })
         })
     },goParent(){
-      window.location.href = "http://localhost:8080/home?path=" + this.nowPath.substring(0,this.nowPath.lastIndexOf("/"))
+      window.location.href = "http://localhost:8080/home?path=/" + this.nowPath.substring(0,this.nowPath.lastIndexOf("/"))
     }
   }
 }
