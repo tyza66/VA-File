@@ -37,7 +37,7 @@ def img2text(path: str = None):
     #调库进行转换
     image = Image.open(path)
     text = pytesseract.image_to_string(image, lang='chi_sim')
-    print(text)
+    #print(text)
     return text
 
 

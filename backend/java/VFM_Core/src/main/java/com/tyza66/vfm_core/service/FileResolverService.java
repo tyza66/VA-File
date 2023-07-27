@@ -16,4 +16,7 @@ public interface FileResolverService {
 
     //识别图片内容
     String image2text(String path);
+
+    //对文件内容进行总结，之后将总结结果放入数据库中方便之后的快速查询
+    
 }

@@ -25,7 +25,7 @@
         <el-button type="primary" @click="download()">下载文件</el-button>
         <el-button type="primary" @click="delete1('', 'file')">删除文件</el-button>
         <el-button type="primary" @click="goParent()">打开所在目录</el-button>
-        <el-button type="primary" @click="reflash()">创建搜索索引</el-button>
+        <el-button type="primary" @click="makeIndex()">创建搜索索引</el-button>
         <el-button type="primary" @click="share()">快速分享文件</el-button>
         <el-button type="primary" @click="pdf2word()" v-show="type == 'pdf'">转PDF为Word</el-button>
         <el-button type="primary" @click="ocr1()" v-show="type == 'png'">OCR识别图片</el-button>
@@ -33,25 +33,22 @@
         <el-button type="primary" @click="reflash()">激活问答系统</el-button>
       </div>
     </div>
-    <div class="right3" v-show="type!='png'">
+    <div class="right3" v-show="type != 'png'">
       <div class="title3">
         <p>文档内容问答</p>
       </div>
-      <div class="context">
-
+      <div class="context1">
+        <div style="text-align: center;color:rgb(197, 199, 201);" v-show="!QAactive">
+          未激活
+        </div>
       </div>
     </div>
-    <div class="right3" v-show="type=='png'">
+    <div class="right3" v-show="type == 'png'">
       <div class="title3">
         <p>OCR识别结果</p>
       </div>
       <div class="context">
-        <el-input
-        v-model="ocr"
-        placeholder="点击OCR识别按钮获得识别结果"
-        show-word-limit
-        type="textarea"
-      />
+        <el-input v-model="ocr" placeholder="点击OCR识别按钮获得识别结果" show-word-limit type="textarea" />
       </div>
     </div>
   </div>
@@ -121,8 +118,13 @@
   z-index: 100;
 }
 
-.context textarea{
+.context textarea {
   height: 300px;
+}
+
+.title3 .context1{
+  display: flex;
+  flex-direction: column;
 }
 </style>
 
@@ -140,7 +142,8 @@ export default {
       nowPath: "/",
       srcUrl: "",
       type: "",
-      ocr:""
+      ocr: "",
+      QAactive: false
     }
   },
   created() {
@@ -353,9 +356,9 @@ export default {
         console.log(err);
       })
     },
-    chat(){
+    chat() {
       this.$router.push('/chat')
-    },pdf2word(){
+    }, pdf2word() {
       request.get("/file/pdf2word", {
         params: {
           "partPath": this.nowPath
@@ -370,14 +373,14 @@ export default {
             message: '转换成功,已存放在同目录下',
           })
           setTimeout(() => {
-            window.open("http://localhost:8080/home?path=/"+this.nowPath.substring(0,this.nowPath.lastIndexOf("/")))
+            window.open("http://localhost:8080/home?path=/" + this.nowPath.substring(0, this.nowPath.lastIndexOf("/")))
           }, 1000)
         }
       }).catch(err => {
         console.log(err);
       })
     },
-    word2pdf(){
+    word2pdf() {
       request.get("/file/word2pdf", {
         params: {
           "partPath": this.nowPath
@@ -392,14 +395,18 @@ export default {
             message: '转换成功,已存放在同目录下',
           })
           setTimeout(() => {
-            window.open("http://localhost:8080/home?path=/"+this.nowPath.substring(0,this.nowPath.lastIndexOf("/")))
+            window.open("http://localhost:8080/home?path=/" + this.nowPath.substring(0, this.nowPath.lastIndexOf("/")))
           }, 1000)
         }
       }).catch(err => {
         console.log(err);
       })
     },
-    ocr1(){
+    ocr1() {
+      ElMessage({
+        type: 'info',
+        message: '正在处理，这可能需要一点时间',
+      })
       request.get("/file/ocr", {
         params: {
           "partPath": this.nowPath
@@ -413,10 +420,15 @@ export default {
             type: 'success',
             message: '识别完成',
           })
-          this.ocr=res.data
+          this.ocr = res.data
         }
       }).catch(err => {
         console.log(err);
+      })
+    }, makeIndex() {
+      ElMessage({
+        type: 'success',
+        message: '已提交异步处理',
       })
     }
   }
