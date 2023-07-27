@@ -10,17 +10,17 @@
       <div class="header-part">
         <el-form-item label="搜索模式" class="header-part">
           <el-radio label="深度搜索" v-model="searchMode" :disabled="searchType == '名称搜索'" />
-          <el-radio label="快速搜索" v-model="searchMode" disabled />
+          <el-radio label="快速搜索" v-model="searchMode" :disabled="searchType == '名称搜索'" />
         </el-form-item>
       </div>
       <div class="header-part">
         <el-form-item label="根路径" class="header-part">
-          <el-input placeholder="请输入路径" v-model="partPath" />
+          <el-input placeholder="请输入路径" v-model="partPath" :disabled="searchMode=='快速搜索'&&searchType=='内容搜索'" />
         </el-form-item>
       </div>
       <div class="header-part">
         <el-form-item label="关键字" class="header-part">
-          <el-input placeholder="请输入关键字" v-model="searchKey" />
+          <el-input placeholder="请输入关键字" v-model="searchKey" :disabled="gjz"/>
         </el-form-item>
       </div>
       <el-button class="sb" type="default" @click="search()">搜索</el-button>
@@ -79,8 +79,9 @@
         <el-col class="path" :span="5">
           {{ item.prototype }}
         </el-col>
-        <el-col class="control" :span="8">
-          <el-button type="default" size="small" v-show="item.type == 'file'" @click="lookup(item.prototype)">预览</el-button>
+        <el-col class="control1" :span="8">
+          <el-button type="default" size="small" v-show="item.type == 'file'"
+            @click="lookup(item.prototype)">预览</el-button>
           <el-button type="default" size="small" v-show="item.type == 'folder'"
             @click="openFolder(item.prototype)">打开</el-button>
           <el-button type="default" size="small" @click="goParent(item.prototype)">前往</el-button>
@@ -184,7 +185,8 @@
   border: #9c9c9c solid 1px;
 }
 
-.item-one .control {
+.item-one .control1 {
+  display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -207,7 +209,7 @@ export default {
       partPath: '/',
       searchKey: '',
       context: [],
-      basePath: "/",
+      basePath: "/"
     }
   },
   created() {
@@ -269,23 +271,42 @@ export default {
           console.log(err);
         })
       } else if (this.searchType == '内容搜索') {
-        request.get('/search/byContent', {
-          params: {
-            "partPath": this.partPath,
-            "key": this.searchKey
-          },
-          headers: {
-            "satoken": this.getCookie("satoken")
+        if (this.searchMode == '深度搜索') {
+          request.get('/search/byContent', {
+            params: {
+              "partPath": this.partPath,
+              "key": this.searchKey
+            },
+            headers: {
+              "satoken": this.getCookie("satoken")
+            }
           }
+          ).then(res => {
+            //console.log(res);
+            if (res.code == 200) {
+              this.context = res.data
+            }
+          }).catch(err => {
+            console.log(err);
+          })
+        } else if (this.searchMode == '快速搜索') {
+          request.get('/file/searchByQuickIndex', {
+            params: {
+              "key": this.searchKey
+            },
+            headers: {
+              "satoken": this.getCookie("satoken")
+            }
+          }
+          ).then(res => {
+            //console.log(res);
+            if (res.code == 200) {
+              this.context = res.data
+            }
+          }).catch(err => {
+            console.log(err);
+          })
         }
-        ).then(res => {
-          //console.log(res);
-          if (res.code == 200) {
-            this.context = res.data
-          }
-        }).catch(err => {
-          console.log(err);
-        })
       }
     },
     goSetting() {
@@ -503,7 +524,7 @@ export default {
       window.location.href = "http://localhost:8080/home?path=" + path.substring(0, path.lastIndexOf("/"))
     }, openFolder(path) {
       window.location.href = "http://localhost:8080/home?path=" + path
-    },lookup(path){
+    }, lookup(path) {
       window.location.href = "http://localhost:8080/online?path=" + path.substring(1)
     }
   }

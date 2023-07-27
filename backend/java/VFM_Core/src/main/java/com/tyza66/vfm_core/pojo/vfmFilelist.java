@@ -1,5 +1,6 @@
 package com.tyza66.vfm_core.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,11 +14,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class vfmFilelist {
+public class VfmFilelist {
     Integer id;
     String size;
     String name;
     String end;
-    String path;
     String about;
+    @TableField("path")
+    String prototype;
 }

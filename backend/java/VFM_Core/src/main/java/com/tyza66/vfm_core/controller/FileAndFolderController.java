@@ -5,7 +5,9 @@ import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.tyza66.vfm_core.pojo.FileAndFolder;
+import com.tyza66.vfm_core.pojo.VfmFilelist;
 import com.tyza66.vfm_core.service.FileResolverService;
+import com.tyza66.vfm_core.service.VfmFileFastIndexService;
 import com.tyza66.vfm_core.service.VfmLocationService;
 import com.tyza66.vfm_core.service.impl.FileAndFolderServiceImpl;
 import com.tyza66.vfm_core.service.impl.VfmLocationServiceImpl;
@@ -53,6 +55,9 @@ public class FileAndFolderController {
 
     @Autowired
     private FileResolverService fileResolverService;
+
+    @Autowired
+    private VfmFileFastIndexService vfmFileFastIndexService;
 
     @ApiOperation("检查根路径是否存在")
     @GetMapping("/checkRoot")
@@ -257,7 +262,7 @@ public class FileAndFolderController {
                 try {
                     String baseLocation = vfmLocationService.getNowLocation();
                     byte[] b = file.getBytes();
-                    FileOutputStream out = new FileOutputStream(baseLocation + "/" + partPath  + file.getOriginalFilename());
+                    FileOutputStream out = new FileOutputStream(baseLocation + "/" + partPath + file.getOriginalFilename());
                     out.write(b);
                     out.close();
                     obj.set("code", 200);
@@ -354,7 +359,7 @@ public class FileAndFolderController {
     //检查指定的文件是否存在
     @ApiOperation("检查指定的文件是否存在")
     @GetMapping("/checkFile")
-    public JSON checkFile(@RequestParam(defaultValue = "") String partPath){
+    public JSON checkFile(@RequestParam(defaultValue = "") String partPath) {
         JSONObject obj = JSONUtil.createObj();
         if (StpUtil.isLogin()) {
             String baseLocation = vfmLocationService.getNowLocation();
@@ -375,7 +380,7 @@ public class FileAndFolderController {
 
     @ApiOperation("把指定的pdf文件转换成word文件")
     @GetMapping("/pdf2word")
-    public JSON pdf2word(@RequestParam(defaultValue = "") String partPath){
+    public JSON pdf2word(@RequestParam(defaultValue = "") String partPath) {
         JSONObject obj = JSONUtil.createObj();
         if (StpUtil.isLogin()) {
             String baseLocation = vfmLocationService.getNowLocation();
@@ -396,7 +401,7 @@ public class FileAndFolderController {
 
     @ApiOperation("把指定的word文件转换成pdf文件")
     @GetMapping("/word2pdf")
-    public JSON word2pdf(@RequestParam(defaultValue = "") String partPath){
+    public JSON word2pdf(@RequestParam(defaultValue = "") String partPath) {
         JSONObject obj = JSONUtil.createObj();
         if (StpUtil.isLogin()) {
             String baseLocation = vfmLocationService.getNowLocation();
@@ -418,7 +423,7 @@ public class FileAndFolderController {
     //指定图片文件OCR识别
     @ApiOperation("指定图片文件OCR识别")
     @GetMapping("/ocr")
-    public JSON ocr(@RequestParam(defaultValue = "") String partPath){
+    public JSON ocr(@RequestParam(defaultValue = "") String partPath) {
         JSONObject obj = JSONUtil.createObj();
         if (StpUtil.isLogin()) {
             String baseLocation = vfmLocationService.getNowLocation();
@@ -441,7 +446,7 @@ public class FileAndFolderController {
     //获得docx中的文本摘要
     @ApiOperation("获得docx中的文本摘要")
     @GetMapping("/getDocxSummary")
-    public JSON getDocxSummary(@RequestParam(defaultValue = "") String partPath){
+    public JSON getDocxSummary(@RequestParam(defaultValue = "") String partPath) {
         JSONObject obj = JSONUtil.createObj();
         if (StpUtil.isLogin()) {
             String baseLocation = vfmLocationService.getNowLocation();
@@ -461,5 +466,48 @@ public class FileAndFolderController {
         return obj;
     }
 
+    @ApiOperation("添加快速索引")
+    @GetMapping("/addQuickIndex")
+    public JSON addQuickIndex(@RequestParam(defaultValue = "") String partPath) {
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            String baseLocation = vfmLocationService.getNowLocation();
+            boolean b = vfmFileFastIndexService.addFastIndex(baseLocation + "/" + partPath);
+            if (b) {
+                obj.set("code", 200);
+                obj.set("msg", "添加成功");
+            } else {
+                obj.set("code", 199);
+                obj.set("msg", "添加失败");
+            }
+        } else {
+            obj.set("code", 201);
+            obj.set("msg", "未登录");
+        }
+        return obj;
+    }
+
+    //使用快速索引进行搜索
+    @ApiOperation("使用快速索引进行搜索")
+    @GetMapping("/searchByQuickIndex")
+    public JSON searchByQuickIndex(@RequestParam(defaultValue = "") String key) {
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            String baseLocation = vfmLocationService.getNowLocation();
+            List<VfmFilelist> list = vfmFileFastIndexService.searchByFastIndex(key);
+            if (list != null) {
+                obj.set("code", 200);
+                obj.set("msg", "搜索成功");
+                obj.set("data", list);
+            } else {
+                obj.set("code", 199);
+                obj.set("msg", "搜索失败");
+            }
+        } else {
+            obj.set("code", 201);
+            obj.set("msg", "未登录");
+        }
+        return obj;
+    }
 }
 

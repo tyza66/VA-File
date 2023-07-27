@@ -439,6 +439,24 @@ export default {
         type: 'success',
         message: '已提交异步处理',
       })
+      request.get("/file/addQuickIndex",{
+        params: {
+          "partPath": this.nowPath
+        },
+        headers: {
+          "satoken": this.getCookie("satoken")
+        },
+        timeout: 1000 * 60 * 5
+      }).then(res => {
+        if (res.code == 200) {
+          ElMessage({
+            type: 'success',
+            message: '索引创建成功',
+          })
+        }
+      }).catch(err => {
+        console.log(err);
+      })
     }, qa() {
       ElMessage({
         type: 'success',
