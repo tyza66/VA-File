@@ -41,7 +41,7 @@ public class FileShareServiceImpl implements FileShareService {
         String[] split = value.split("\\|\\|\\|");
         //System.out.println(split.length);
         for(int i=1;i<split.length;i++){
-            FileShare fileShare = new FileShare(split[i].split(",")[0].split("=")[1], split[i].split(",")[1].split("=")[1], split[i].split(",")[2].split("=")[1].substring(0,split[i].split(",")[2].split("=")[1].length()-1));
+            FileShare fileShare = new FileShare(split[i].split(",")[0].split("shareMan=")[1], split[i].split(",")[1].split("name=")[1], split[i].split(",")[2].split("file=")[1].substring(0,split[i].split(",")[2].split("file=")[1].length()-1));
             fileShares.add(fileShare);
         }
         return fileShares;

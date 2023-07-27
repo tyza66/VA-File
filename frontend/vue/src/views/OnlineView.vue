@@ -4,6 +4,7 @@
       当前文件>{{ '/' + nowPath }}
       <el-button class="rb" type="default" size="small" @click="goSetting()">设置</el-button>
       <el-button class="rb" type="default" size="small" @click="goHome()">返回主页</el-button>
+      <el-button class="rb" size="small" type="link" @click="chat()">文件分享</el-button>
     </div>
     <div class="main-all"
       v-show="(nowPath != '/' && (type == 'pdf' || type == 'txt' || type == 'png' || type == 'jepg'))">
@@ -22,13 +23,13 @@
       <div class="control">
         <el-button type="primary" @click="reflash()">刷新文件</el-button>
         <el-button type="primary" @click="download()">下载文件</el-button>
-        <el-button type="primary" @click="delete1('','file')">删除文件</el-button>
+        <el-button type="primary" @click="delete1('', 'file')">删除文件</el-button>
         <el-button type="primary" @click="goParent()">打开所在目录</el-button>
         <el-button type="primary" @click="reflash()">创建搜索索引</el-button>
-        <el-button type="primary" @click="reflash()">快速分享文件</el-button>
-        <el-button type="primary" @click="reflash()" v-show="type == 'pdf'">转PDF为Word</el-button>
+        <el-button type="primary" @click="share()">快速分享文件</el-button>
+        <el-button type="primary" @click="pdf2word()" v-show="type == 'pdf'">转PDF为Word</el-button>
         <el-button type="primary" @click="reflash()" v-show="type == 'png'">OCR识别图片</el-button>
-        <el-button type="primary" @click="reflash()" v-show="type == 'docx'">转Word为PDF</el-button>
+        <el-button type="primary" @click="word2pdf()" v-show="type == 'docx'">转Word为PDF</el-button>
         <el-button type="primary" @click="reflash()">激活问答系统</el-button>
       </div>
     </div>
@@ -111,7 +112,7 @@
 
 <script>
 import { request } from '@/utils/request';
-import { ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 
 export default {
@@ -313,8 +314,73 @@ export default {
             message: '已取消删除',
           })
         })
-    },goParent(){
-      window.location.href = "http://localhost:8080/home?path=/" + this.nowPath.substring(0,this.nowPath.lastIndexOf("/"))
+    }, goParent() {
+      window.location.href = "http://localhost:8080/home?path=/" + this.nowPath.substring(0, this.nowPath.lastIndexOf("/"))
+    }, share() {
+      request.post("/share/file", {
+        "downloadUrl": window.location.href,
+        "name": this.nowPath.substring(this.nowPath.lastIndexOf("/") + 1, this.nowPath.length),
+      }, {
+        headers: {
+          "satoken": this.getCookie("satoken")
+        }
+      }).then(res => {
+        if (res.code == 200) {
+          ElMessage({
+            type: 'success',
+            message: '分享成功',
+          })
+          this.reflushFile()
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    chat(){
+      this.$router.push('/chat')
+    },pdf2word(){
+      request.get("/file/pdf2word", {
+        params: {
+          "partPath": this.nowPath
+        },
+        headers: {
+          "satoken": this.getCookie("satoken")
+        }
+      }).then(res => {
+        if (res.code == 200) {
+          ElMessage({
+            type: 'success',
+            message: '转换成功,已存放在同目录下',
+          })
+          setTimeout(() => {
+            window.open("http://localhost:8080/home?path=/"+this.nowPath.substring(0,this.nowPath.lastIndexOf("/")))
+          }, 1000)
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    word2pdf(){
+      request.get("/file/word2pdf", {
+        params: {
+          "partPath": this.nowPath
+        },
+        headers: {
+          "satoken": this.getCookie("satoken")
+        }
+      }).then(res => {
+        if (res.code == 200) {
+          ElMessage({
+            type: 'success',
+            message: '转换成功,已存放在同目录下',
+          })
+          setTimeout(() => {
+            window.open("http://localhost:8080/home?path=/"+this.nowPath.substring(0,this.nowPath.lastIndexOf("/")))
+          }, 1000)
+        }
+      }).catch(err => {
+        console.log(err);
+      })
     }
   }
 }
