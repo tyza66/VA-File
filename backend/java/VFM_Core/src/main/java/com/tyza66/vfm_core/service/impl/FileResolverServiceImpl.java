@@ -44,4 +44,14 @@ public class FileResolverServiceImpl implements FileResolverService {
             return false;
         }
     }
+
+    @Override
+    public String image2text(String path) {
+        String forObject = restTemplate.getForObject("http://localhost:9093/img2text?path=" + path, String.class);
+        if(forObject!=null) {
+            return forObject;
+        }else{
+            return "";
+        }
+    }
 }

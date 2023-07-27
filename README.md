@@ -36,6 +36,9 @@
 <details><summary>在线预览文件</summary>
 <img src="./文档/图片/在线预览文件.png"/>
 </details>
+<details><summary>OCR识别图片</summary>
+<img src="./文档/图片/OCR识别图片.png"/>
+</details>
 
 ##### 预计实现功能
 - [X] 用户登录

@@ -13,4 +13,7 @@ public interface FileResolverService {
 
     //word转换成pdf
     boolean word2pdf(String path);
+
+    //识别图片内容
+    String image2text(String path);
 }

@@ -28,17 +28,30 @@
         <el-button type="primary" @click="reflash()">创建搜索索引</el-button>
         <el-button type="primary" @click="share()">快速分享文件</el-button>
         <el-button type="primary" @click="pdf2word()" v-show="type == 'pdf'">转PDF为Word</el-button>
-        <el-button type="primary" @click="reflash()" v-show="type == 'png'">OCR识别图片</el-button>
+        <el-button type="primary" @click="ocr1()" v-show="type == 'png'">OCR识别图片</el-button>
         <el-button type="primary" @click="word2pdf()" v-show="type == 'docx'">转Word为PDF</el-button>
         <el-button type="primary" @click="reflash()">激活问答系统</el-button>
       </div>
     </div>
-    <div class="right3">
+    <div class="right3" v-show="type!='png'">
       <div class="title3">
         <p>文档内容问答</p>
       </div>
       <div class="context">
 
+      </div>
+    </div>
+    <div class="right3" v-show="type=='png'">
+      <div class="title3">
+        <p>OCR识别结果</p>
+      </div>
+      <div class="context">
+        <el-input
+        v-model="ocr"
+        placeholder="点击OCR识别按钮获得识别结果"
+        show-word-limit
+        type="textarea"
+      />
       </div>
     </div>
   </div>
@@ -106,7 +119,10 @@
   top: 150px;
   right: 0;
   z-index: 100;
-  height: 200px;
+}
+
+.context textarea{
+  height: 300px;
 }
 </style>
 
@@ -123,7 +139,8 @@ export default {
     return {
       nowPath: "/",
       srcUrl: "",
-      type: ""
+      type: "",
+      ocr:""
     }
   },
   created() {
@@ -377,6 +394,26 @@ export default {
           setTimeout(() => {
             window.open("http://localhost:8080/home?path=/"+this.nowPath.substring(0,this.nowPath.lastIndexOf("/")))
           }, 1000)
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    ocr1(){
+      request.get("/file/ocr", {
+        params: {
+          "partPath": this.nowPath
+        },
+        headers: {
+          "satoken": this.getCookie("satoken")
+        }
+      }).then(res => {
+        if (res.code == 200) {
+          ElMessage({
+            type: 'success',
+            message: '识别完成',
+          })
+          this.ocr=res.data
         }
       }).catch(err => {
         console.log(err);

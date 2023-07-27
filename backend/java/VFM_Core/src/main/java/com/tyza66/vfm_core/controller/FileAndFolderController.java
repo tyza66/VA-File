@@ -414,5 +414,28 @@ public class FileAndFolderController {
         }
         return obj;
     }
+
+    //指定图片文件OCR识别
+    @ApiOperation("指定图片文件OCR识别")
+    @GetMapping("/ocr")
+    public JSON ocr(@RequestParam(defaultValue = "") String partPath){
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            String baseLocation = vfmLocationService.getNowLocation();
+            String s = fileResolverService.image2text(baseLocation + "/" + partPath);
+            if (s != null) {
+                obj.set("code", 200);
+                obj.set("msg", "识别成功");
+                obj.set("data", s);
+            } else {
+                obj.set("code", 199);
+                obj.set("msg", "识别失败");
+            }
+        } else {
+            obj.set("code", 201);
+            obj.set("msg", "未登录");
+        }
+        return obj;
+    }
 }
 
