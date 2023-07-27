@@ -5,7 +5,8 @@
       <el-button class="rb" type="default" size="small" @click="goSetting()">设置</el-button>
       <el-button class="rb" type="default" size="small" @click="goHome()">返回主页</el-button>
     </div>
-    <div class="main-all" v-show="(nowPath != '/' && (type == 'pdf' || type == 'txt' || type == 'png' || type == 'jepg'))">
+    <div class="main-all"
+      v-show="(nowPath != '/' && (type == 'pdf' || type == 'txt' || type == 'png' || type == 'jepg'))">
       <iframe :src="srcUrl" frameborder="0" width="100%" height="100%" style="height: 88.2vh;"></iframe>
     </div>
     <div class="main-all" v-show="nowPath != '/' && (type == 'docx')">
@@ -20,13 +21,15 @@
       </div>
       <div class="control">
         <el-button type="primary" @click="reflash()">刷新文件</el-button>
-        <el-button type="primary" @click="reflash()">下载文件</el-button>
-        <el-button type="primary" @click="reflash()">删除文件</el-button>
-        <el-button type="primary" @click="reflash()">打开所在目录</el-button>
-        <el-button type="primary" @click="reflash()">创建快捷索引</el-button>
+        <el-button type="primary" @click="download()">下载文件</el-button>
+        <el-button type="primary" @click="delete1('','file')">删除文件</el-button>
+        <el-button type="primary" @click="goParent()">打开所在目录</el-button>
+        <el-button type="primary" @click="reflash()">创建搜索索引</el-button>
         <el-button type="primary" @click="reflash()">快速分享文件</el-button>
-        <el-button type="primary" @click="reflash()">转PDF为Word</el-button>
-        <el-button type="primary" @click="reflash()">OCR识别图片</el-button>
+        <el-button type="primary" @click="reflash()" v-show="type == 'pdf'">转PDF为Word</el-button>
+        <el-button type="primary" @click="reflash()" v-show="type == 'png'">OCR识别图片</el-button>
+        <el-button type="primary" @click="reflash()" v-show="type == 'docx'">转Word为PDF</el-button>
+        <el-button type="primary" @click="reflash()">激活问答系统</el-button>
       </div>
     </div>
     <div class="right3">
@@ -34,7 +37,7 @@
         <p>文档内容问答</p>
       </div>
       <div class="context">
-        
+
       </div>
     </div>
   </div>
@@ -94,7 +97,7 @@
   margin-bottom: 5px !important;
 }
 
-.right3{
+.right3 {
   width: 250px;
   position: fixed;
   background-color: #fff;
@@ -108,7 +111,7 @@
 
 <script>
 import { request } from '@/utils/request';
-import axios from 'axios'
+import { ElMessageBox } from 'element-plus'
 
 
 export default {
@@ -227,6 +230,91 @@ export default {
     },
     goHome() {
       this.$router.push('/home')
+    }, download() {
+      var path = "http://localhost:9090/file/download.action?partPath=" + this.nowPath
+      //console.log(path);
+      window.open(path)
+    }, delete1(name, type) {
+      //console.log(name, type);
+      ElMessageBox.confirm(
+        '确定要删除吗?',
+        '删除',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(() => {
+          if (type == "file") {
+            //console.log(this.nowPath.substring(1) + name);
+            request.get("/file/deleteFile", {
+              params: {
+                "partPath": this.nowPath
+              },
+              headers: {
+                "satoken": this.getCookie("satoken")
+              }
+            }).then(res => {
+              if (res.code == 201) {
+                return
+              }
+              if (res.code == 200) {
+                this.$message({
+                  message: '删除成功,一秒后跳回主页',
+                  type: 'success'
+                })
+                setTimeout(() => {
+                  this.$router.push('/home')
+                }, 1000)
+              } else {
+                this.$message({
+                  message: '删除失败',
+                  type: 'error'
+                })
+                this.reflash()
+              }
+            }).catch(err => {
+              console.log(err);
+            })
+          } else if (type = "folder") {
+            request.get("/file/deleteFolder", {
+              params: {
+                "partPath": this.nowPath.substring(1) + name
+              },
+              headers: {
+                "satoken": this.getCookie("satoken")
+              }
+            }).then(res => {
+              if (res.code == 201) {
+                return
+              }
+              if (res.code == 200) {
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                })
+                this.reflash()
+              } else {
+                this.$message({
+                  message: '删除失败',
+                  type: 'error'
+                })
+                this.reflash()
+              }
+            }).catch(err => {
+              console.log(err);
+            })
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },goParent(){
+      window.location.href = "http://localhost:8080/home?path=" + this.nowPath.substring(0,this.nowPath.lastIndexOf("/"))
     }
   }
 }

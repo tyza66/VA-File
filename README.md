@@ -30,8 +30,11 @@
 <details><summary>检索工具</summary>
 <img src="./文档/图片/检索工具.png"/>
 </details>
-<details><summary>内容检索</summary>
-<img src="./文档/图片/内容检索.png"/>
+<details><summary>在线聊天和文件分享</summary>
+<img src="./文档/图片/在线聊天和文件分享.png"/>
+</details>
+<details><summary>在线预览文件</summary>
+<img src="./文档/图片/在线预览文件.png"/>
 </details>
 
 ##### 预计实现功能
@@ -48,7 +51,7 @@
 - [ ] 基于NLP的文档检索系统(更换根文件的时候进行预检索)
 - [X] 基于OCR的文档存储系统
 - [ ] 基于ES的全文检索系统
-- [ ] 基于大模型的文档知识问答系统
+- [X] 基于大模型的文档知识问答系统
 
 ##### 实现方案
 - 文件夹管理：在计算机中，文件夹的结构是树结构，我们可以通过递归的方式检索根文件夹下的所有文件夹，并且如果想在前端展示的话，我们可以直接定义一个文件和文件夹公用的类进行同List返回文件夹内容，之后到前端用很容易区分的特征进行不同形式的展示
@@ -63,7 +66,7 @@
 - 文档分享：这个原本可以使用Socket长连接进行实现，但是考虑到这个功能的使用场景，使用Socket会有一些不必要的麻烦，我这里面向完全使用HTTP短连接进行实现，所以进行的操作就是将分享文件操作放入Redis中（其实可以用消息队列），分享的文件分享信息默认过期时间是一天，然后在前端可以进行手动刷新或者轮询检查，如果有新的分享文件，就进行提示，然后进行下载操作
 - 文档在线查看：如果是pdf，图片啥的，浏览器自身支持，直接通过修改响应请求头的方式进行响应在线访问就好了（我的node版本太高，不支持部分前端框架，比如pdfjs不支持，所以我走的是浏览器默认支持的路线，直接内嵌iframe），暂时就实现到文本文档，图片，pdf
 - 格式转换：基本可以使用POI中自带的转换功能进行实现，但是我使用的是手打分分布式实现解耦异步，在MIND2中进行异步格式转换
-- 基于NLP的文档检索系统：就是上面提到的快速检索，但是因为开发周期原因，只能每个文件手动点击添加检索
+- 基于NLP的文档检索系统：就是上面提到的快速检索，但是因为开发周期原因，暂时只能每个文件手动点击添加检索
 - 基于OCR的文档存储系统：使用MIND2中的OCR库进行实现
 - 基于ES的全文检索系统：需要用到Elasticsearch，还待研究
 - 基于大模型的文档知识问答系统：在MIND0中使用HuggingFace的GPT2.0进行实现
@@ -73,7 +76,7 @@
 ##### 后端程序
 - 环境：Java8、MySQL、Redis、Docker、Redis
 - Java后端使用技术：Spring、Spring Boot、MyBatis、MyBatis Plus、Knife4j、Hutool、Sa-Token、Lettuce、POI、PDFBox、Socket
-- Python后端使用技术：FastAPI、Uvicorn、HuggingFace、GPT2.0、PyTorch、Transformers、PyPDF2、Docx2txt、Tesseract-OCR、PyPDF2、Docx2txt、Docx2pdf、Docx2pdf、PIL、Pytesseract、
+- Python后端使用技术：FastAPI、Uvicorn、HuggingFace、GPT2.0、TensorFlow、Transformers、PyPDF2、Docx2txt、Tesseract-OCR、PyPDF2、Docx2txt、Docx2pdf、Docx2pdf、PIL、Pytesseract
 - Java后端(VAF-CORE)端口：9090
 - 响应代码：198错误、199失败、200成功、201权限不足
 - Python后端
