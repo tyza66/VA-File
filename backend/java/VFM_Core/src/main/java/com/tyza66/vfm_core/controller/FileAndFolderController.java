@@ -5,6 +5,7 @@ import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.tyza66.vfm_core.pojo.FileAndFolder;
+import com.tyza66.vfm_core.service.FileResolverService;
 import com.tyza66.vfm_core.service.VfmLocationService;
 import com.tyza66.vfm_core.service.impl.FileAndFolderServiceImpl;
 import com.tyza66.vfm_core.service.impl.VfmLocationServiceImpl;
@@ -49,6 +50,9 @@ public class FileAndFolderController {
 
     @Autowired
     private FileAndFolderServiceImpl fileAndFolderService;
+
+    @Autowired
+    private FileResolverService fileResolverService;
 
     @ApiOperation("检查根路径是否存在")
     @GetMapping("/checkRoot")
@@ -361,6 +365,48 @@ public class FileAndFolderController {
             } else {
                 obj.set("code", 199);
                 obj.set("msg", "文件不存在");
+            }
+        } else {
+            obj.set("code", 201);
+            obj.set("msg", "未登录");
+        }
+        return obj;
+    }
+
+    @ApiOperation("把指定的pdf文件转换成word文件")
+    @GetMapping("/pdf2word")
+    public JSON pdf2word(@RequestParam(defaultValue = "") String partPath){
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            String baseLocation = vfmLocationService.getNowLocation();
+            boolean b = fileResolverService.pdf2word(baseLocation + "/" + partPath);
+            if (b) {
+                obj.set("code", 200);
+                obj.set("msg", "转换成功");
+            } else {
+                obj.set("code", 199);
+                obj.set("msg", "转换失败");
+            }
+        } else {
+            obj.set("code", 201);
+            obj.set("msg", "未登录");
+        }
+        return obj;
+    }
+
+    @ApiOperation("把指定的word文件转换成pdf文件")
+    @GetMapping("/word2pdf")
+    public JSON word2pdf(@RequestParam(defaultValue = "") String partPath){
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            String baseLocation = vfmLocationService.getNowLocation();
+            boolean b = fileResolverService.word2pdf(baseLocation + "/" + partPath);
+            if (b) {
+                obj.set("code", 200);
+                obj.set("msg", "转换成功");
+            } else {
+                obj.set("code", 199);
+                obj.set("msg", "转换失败");
             }
         } else {
             obj.set("code", 201);

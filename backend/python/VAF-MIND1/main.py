@@ -6,7 +6,7 @@ import docx2txt
 
 app = FastAPI(title="VAF-MIND1")
 
-@app.get("/text", summary='text中判断', tags=['关键词判断'])
+@app.get("/text", summary='text中判断', tags=['text中判断'])
 def text(path: str = None, key: str = None):
     end = "false"
     # 打开文件
@@ -22,7 +22,7 @@ def text(path: str = None, key: str = None):
     return end
 
 
-@app.get("/docx", summary='doxc中判断', tags=['关键词判断'])
+@app.get("/docx", summary='doxc中判断', tags=['doxc中判断'])
 def docx(path: str = None, key: str = None):
     end = "false"
     text = docx2txt.process(path)
@@ -30,7 +30,7 @@ def docx(path: str = None, key: str = None):
         end = "true"
     return end
 
-@app.get("/pdf", summary='pdf中判断', tags=['关键词判断'])
+@app.get("/pdf", summary='pdf中判断', tags=['pdf中判断'])
 def pdf(path: str = None, key: str = None):
     end = "false"
     with open(path, 'rb') as pdfFileObj:

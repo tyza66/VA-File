@@ -20,6 +20,21 @@
       </div>
       <div class="control">
         <el-button type="primary" @click="reflash()">刷新文件</el-button>
+        <el-button type="primary" @click="reflash()">下载文件</el-button>
+        <el-button type="primary" @click="reflash()">删除文件</el-button>
+        <el-button type="primary" @click="reflash()">打开所在目录</el-button>
+        <el-button type="primary" @click="reflash()">创建快捷索引</el-button>
+        <el-button type="primary" @click="reflash()">快速分享文件</el-button>
+        <el-button type="primary" @click="reflash()">转PDF为Word</el-button>
+        <el-button type="primary" @click="reflash()">OCR识别图片</el-button>
+      </div>
+    </div>
+    <div class="right3">
+      <div class="title3">
+        <p>文档内容问答</p>
+      </div>
+      <div class="context">
+        
       </div>
     </div>
   </div>
@@ -55,7 +70,6 @@
   top: 150px;
   left: 0;
   z-index: 100;
-  height: 200px;
 }
 
 .title3 {
@@ -68,11 +82,27 @@
 .control {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .control button {
-  margin: 10px auto;
   width: 80%;
+  display: block;
+  margin: 0 !important;
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
+}
+
+.right3{
+  width: 250px;
+  position: fixed;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(26, 26, 26, .1);
+  top: 150px;
+  right: 0;
+  z-index: 100;
+  height: 200px;
 }
 </style>
 

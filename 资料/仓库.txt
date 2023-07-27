@@ -3,3 +3,4 @@ https://github.com/tyza66/TravelAgencyManagement
 https://github.com/tyza66/ManagementBackgroundInterface
 https://github.com/tyza66/WebSocketChatRoom
 https://github.com/tyza66/TalkingMoreIsBeneficial
+https://github.com/tesseract-ocr/tessdata
