@@ -1,16 +1,26 @@
 <template>
   <div>
     <div class="header">
-      当前文件>{{ nowPath }}
+      当前文件>{{ '/' + nowPath }}
       <el-button class="rb" type="default" size="small" @click="goSetting()">设置</el-button>
       <el-button class="rb" type="default" size="small" @click="goHome()">返回主页</el-button>
     </div>
-    <div class="main-all" v-show="(nowPath != '/' && (type == 'pdf' || type == 'txt' || type == 'png'))">
+    <div class="main-all" v-show="(nowPath != '/' && (type == 'pdf' || type == 'txt' || type == 'png' || type == 'jepg'))">
       <iframe :src="srcUrl" frameborder="0" width="100%" height="100%" style="height: 88.2vh;"></iframe>
     </div>
-
+    <div class="main-all" v-show="nowPath != '/' && (type == 'docx')">
+      开发周期原因，暂不支持此格式，但是你可以对此文件进行操作。
+    </div>
     <div v-show="nowPath == '/'">
       您未选择打开的文件，或您访问的文件不存在，请返回其他界面选择文件，或通过其他用户分享的连接访问文件。
+    </div>
+    <div class="left3">
+      <div class="title3">
+        <p>可执行操作</p>
+      </div>
+      <div class="control">
+        <el-button type="primary" @click="reflash()">刷新文件</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -36,11 +46,39 @@
   margin-top: 3px;
   margin-right: 10px;
 }
+
+.left3 {
+  width: 200px;
+  position: fixed;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(26, 26, 26, .1);
+  top: 150px;
+  left: 0;
+  z-index: 100;
+  height: 200px;
+}
+
+.title3 {
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  font-family: '宋体';
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+}
+
+.control button {
+  margin: 10px auto;
+  width: 80%;
+}
 </style>
 
 <script>
 import { request } from '@/utils/request';
-import mammoth from 'mammoth.browser.js';
+import axios from 'axios'
 
 
 export default {
@@ -122,13 +160,38 @@ export default {
       //如果没有找到匹配的参数名，则返回false
       return false;
     }, reflash() {
-      var end = this.nowPath.substring(this.nowPath.lastIndexOf(".") + 1, this.nowPath.length)
-      this.type = end
-      if (end == "docx") {
+      var that = this;
+      request.get("/file/checkFile?partPath=" + this.nowPath, {
+        headers: {
+          "satoken": this.getCookie("satoken")
+        }
+      }).then(res => {
+        if (res.code == 200) {
+          var end = that.nowPath.substring(that.nowPath.lastIndexOf(".") + 1, that.nowPath.length)
+          that.type = end
+          if (end == "docx") {
 
-      } else {
-        this.srcUrl = "http://localhost:9090/file/filesOnline?partPath=" + this.nowPath
-      }
+          } else {
+            that.srcUrl = "http://localhost:9090/file/filesOnline?partPath=" + that.nowPath + "&a=" + Math.random()
+          }
+        } else if (res.code == 201) {
+          that.$message({
+            message: '您未登录,一秒后自动跳转到登录界面',
+            type: 'error'
+          });
+          setTimeout(() => {
+            that.$router.push('/login')
+          }, 1000)
+        } else if (res.code == 199) {
+          that.$message({
+            message: '您访问的文件不存在，一秒后自动跳转到主页',
+            type: 'error'
+          });
+          setTimeout(() => {
+            that.$router.push('/home')
+          }, 1000)
+        }
+      })
     }, goSetting() {
       this.$router.push('/setting')
     },

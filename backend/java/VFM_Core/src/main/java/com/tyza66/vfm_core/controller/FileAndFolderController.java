@@ -316,6 +316,9 @@ public class FileAndFolderController {
             if (type.equals("xls")) {
                 response.setContentType("application/vnd.ms-excel");
             }
+            if (type.equals("xlsx")) {
+                response.setContentType("application/vnd.ms-excel");
+            }
             //如果是ppt
             if (type.equals("ppt")) {
                 response.setContentType("application/vnd.ms-powerpoint");
@@ -343,4 +346,27 @@ public class FileAndFolderController {
             e.printStackTrace();
         }
     }
+
+    //检查指定的文件是否存在
+    @ApiOperation("检查指定的文件是否存在")
+    @GetMapping("/checkFile")
+    public JSON checkFile(@RequestParam(defaultValue = "") String partPath){
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            String baseLocation = vfmLocationService.getNowLocation();
+            boolean b = FileAndFolderUtil.checkIfFileExists(baseLocation + "/" + partPath);
+            if (b) {
+                obj.set("code", 200);
+                obj.set("msg", "文件存在");
+            } else {
+                obj.set("code", 199);
+                obj.set("msg", "文件不存在");
+            }
+        } else {
+            obj.set("code", 201);
+            obj.set("msg", "未登录");
+        }
+        return obj;
+    }
 }
+

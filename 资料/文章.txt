@@ -5,3 +5,5 @@ https://www.51cto.com/article/744067.html
 https://blog.csdn.net/sanhewuyang/article/details/104262273
 https://blog.csdn.net/weixin_40464680/article/details/130503135
 https://blog.csdn.net/m0_46114541/article/details/130869779
+https://kuangyx.cn/docs/%E6%96%87%E7%AB%A0/%E5%89%8D%E7%AB%AF/vue%E9%A2%84%E8%A7%88word%E6%96%87%E4%BB%B6docx.html
+https://kuangyx.cn/docs/%E6%96%87%E7%AB%A0/%E5%89%8D%E7%AB%AF/vue%E9%A2%84%E8%A7%88Excel%E8%A1%A8%E6%A0%BC.html

@@ -328,6 +328,11 @@ public class FileAndFolderUtil {
         return fileAndFolders;
     }
 
+    //检查目标位置的文件是否存在
+    public static boolean checkIfFileExists(String path) {
+        return fileExists(path);
+    }
+
 
 //Bean生命周期
 
