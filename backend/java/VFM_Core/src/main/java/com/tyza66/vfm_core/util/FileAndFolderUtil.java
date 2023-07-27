@@ -3,6 +3,8 @@ package com.tyza66.vfm_core.util;
 import ch.qos.logback.classic.spi.EventArgUtil;
 import com.tyza66.vfm_core.pojo.FileAndFolder;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -112,7 +114,7 @@ public class FileAndFolderUtil {
             String size = "0";
             if (fileIn.isFile()) {
                 end = name.substring(name.lastIndexOf(".") + 1);
-                if(name.contains(".")) {
+                if (name.contains(".")) {
                     name = name.substring(0, name.lastIndexOf("."));
                 }
                 size = String.valueOf(fileIn.length());
@@ -238,7 +240,7 @@ public class FileAndFolderUtil {
                 String size = "0";
                 if (fileIn.isFile()) {
                     end = name.substring(name.lastIndexOf(".") + 1);
-                    if(name.contains(".")) {
+                    if (name.contains(".")) {
                         name = name.substring(0, name.lastIndexOf("."));
                     }
                     size = String.valueOf(fileIn.length());
@@ -267,7 +269,7 @@ public class FileAndFolderUtil {
         String fileName = getFileName(path);
         String type = fileName.substring(fileName.lastIndexOf(".") + 1);
         //检查txt文件内容
-        if (type.equals("txt")||type.equals("java")||type.equals("c")) {
+        if (type.equals("txt") || type.equals("java") || type.equals("c")) {
             String result = restTemplate.getForObject("http://localhost:9092/text?path=" + path + "&key=" + key, String.class);
             //System.out.println( path+" "+result);
             if (result != null && result.contains("true")) {
@@ -305,13 +307,13 @@ public class FileAndFolderUtil {
                 System.out.println(fileIn.getAbsolutePath() + " " + checkIfFileInclude(fileIn.getAbsolutePath(), key));
             }*/
             //如果是文件 就先判断文件内容是否包含关键字 包含的话就要
-            if (fileIn.isFile()&&checkIfFileInclude(fileIn.getAbsolutePath(),key)) {
+            if (fileIn.isFile() && checkIfFileInclude(fileIn.getAbsolutePath(), key)) {
                 String name = fileIn.getName();
                 String end = "";
                 String size = "0";
                 if (fileIn.isFile()) {
                     end = name.substring(name.lastIndexOf(".") + 1);
-                    if(name.contains(".")) {
+                    if (name.contains(".")) {
                         name = name.substring(0, name.lastIndexOf("."));
                     }
                     size = String.valueOf(fileIn.length());
@@ -331,6 +333,21 @@ public class FileAndFolderUtil {
     //检查目标位置的文件是否存在
     public static boolean checkIfFileExists(String path) {
         return fileExists(path);
+    }
+
+    //获得docx文件中内容的文本
+    public static String getDocxFileInnerText(String path) throws IOException {
+        File file = new File(path);
+        FileInputStream fis = new FileInputStream(file.getAbsolutePath());
+        XWPFDocument document = new XWPFDocument(fis);
+        List<XWPFParagraph> paragraphs = document.getParagraphs();
+        //构建可见长度字符串
+        StringBuilder end = new StringBuilder();
+        for (XWPFParagraph para : paragraphs) {
+            end.append(para.getText());
+        }
+        fis.close();
+        return end.toString();
     }
 
 

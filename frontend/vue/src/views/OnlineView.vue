@@ -25,12 +25,12 @@
         <el-button type="primary" @click="download()">下载文件</el-button>
         <el-button type="primary" @click="delete1('', 'file')">删除文件</el-button>
         <el-button type="primary" @click="goParent()">打开所在目录</el-button>
-        <el-button type="primary" @click="makeIndex()">创建搜索索引</el-button>
+        <el-button type="primary" @click="makeIndex()" v-show="type == 'docx'">创建搜索索引</el-button>
         <el-button type="primary" @click="share()">快速分享文件</el-button>
         <el-button type="primary" @click="pdf2word()" v-show="type == 'pdf'">转PDF为Word</el-button>
         <el-button type="primary" @click="ocr1()" v-show="type == 'png'">OCR识别图片</el-button>
         <el-button type="primary" @click="word2pdf()" v-show="type == 'docx'">转Word为PDF</el-button>
-        <el-button type="primary" @click="reflash()">激活问答系统</el-button>
+        <el-button type="primary" @click="qa()" v-show="type == 'docx'">激活问答系统</el-button>
       </div>
     </div>
     <div class="right3" v-show="type != 'png'">
@@ -40,6 +40,12 @@
       <div class="context1">
         <div style="text-align: center;color:rgb(197, 199, 201);" v-show="!QAactive">
           未激活
+        </div>
+        <div class="sum" v-show="QAactive">
+          摘要：{{ sumInfo }} <br />
+          提问：<br />
+          <el-input v-model="question"></el-input>
+          <el-button style="width:100%" @click="ask()">提交</el-button>
         </div>
       </div>
     </div>
@@ -122,7 +128,7 @@
   height: 300px;
 }
 
-.title3 .context1{
+.title3 .context1 {
   display: flex;
   flex-direction: column;
 }
@@ -143,7 +149,9 @@ export default {
       srcUrl: "",
       type: "",
       ocr: "",
-      QAactive: false
+      QAactive: false,
+      sumInfo: "",
+      question: ""
     }
   },
   created() {
@@ -413,7 +421,8 @@ export default {
         },
         headers: {
           "satoken": this.getCookie("satoken")
-        }
+        },
+        timeout: 1000 * 60 * 5
       }).then(res => {
         if (res.code == 200) {
           ElMessage({
@@ -429,6 +438,52 @@ export default {
       ElMessage({
         type: 'success',
         message: '已提交异步处理',
+      })
+    }, qa() {
+      ElMessage({
+        type: 'success',
+        message: '已提交启动处理，这可能需要一点时间',
+      })
+      request.get("/file/getDocxSummary", {
+        params: {
+          "partPath": this.nowPath
+        },
+        headers: {
+          "satoken": this.getCookie("satoken")
+        },
+        timeout: 1000 * 60 * 5
+      })
+        .then(res => {
+          if (res.code == 200) {
+            ElMessage({
+              type: 'success',
+              message: '上文摘要获得成功，您现在可以开始提问了',
+            })
+            this.QAactive = true
+            this.sumInfo = res.data
+          }
+        })
+    }, ask() {
+      ElMessage({
+        type: 'success',
+        message: '问题提交成功，您可以继续提问',
+      })
+      request.get("/qr/q", {
+        params: {
+          "context": this.sumInfo,
+          "q": this.question
+        },
+        headers: {
+          "satoken": this.getCookie("satoken")
+        },
+        timeout: 1000 * 60 * 5
+      }).then(res => {
+        if (res.code == 200) {
+          ElMessage({
+            type: 'success',
+            message: "回答您的问题:"+res.data,
+          })
+        }
       })
     }
   }

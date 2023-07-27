@@ -38,4 +38,5 @@ public interface FileAndFolderService {
 
     //重命名文件
     boolean renameFile(String oldPath,String newName);
+
 }

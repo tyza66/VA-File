@@ -437,5 +437,29 @@ public class FileAndFolderController {
         }
         return obj;
     }
+
+    //获得docx中的文本摘要
+    @ApiOperation("获得docx中的文本摘要")
+    @GetMapping("/getDocxSummary")
+    public JSON getDocxSummary(@RequestParam(defaultValue = "") String partPath){
+        JSONObject obj = JSONUtil.createObj();
+        if (StpUtil.isLogin()) {
+            String baseLocation = vfmLocationService.getNowLocation();
+            String s = fileResolverService.summarize(baseLocation + "/" + partPath);
+            if (s != null) {
+                obj.set("code", 200);
+                obj.set("msg", "获取成功");
+                obj.set("data", s);
+            } else {
+                obj.set("code", 199);
+                obj.set("msg", "获取失败");
+            }
+        } else {
+            obj.set("code", 201);
+            obj.set("msg", "未登录");
+        }
+        return obj;
+    }
+
 }
 

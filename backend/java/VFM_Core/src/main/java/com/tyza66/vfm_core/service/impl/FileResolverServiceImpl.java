@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 
 /**
  * Author: tyza66
@@ -54,4 +55,21 @@ public class FileResolverServiceImpl implements FileResolverService {
             return "";
         }
     }
+
+    @Override
+    public String summarize(String path) {
+        try {
+            String docxFileInnerText = FileAndFolderUtil.getDocxFileInnerText(path);
+            String forObject = restTemplate.getForObject("http://localhost:9091/sum?text=" + docxFileInnerText, String.class);
+            if(forObject!=null) {
+                return forObject;
+            }else{
+                return "";
+            }
+        } catch (IOException e) {
+            return "";
+        }
+    }
+
+
 }
