@@ -83,7 +83,7 @@
 ##### 后端程序
 - 环境：Java8、MySQL、Redis、Docker、Redis
 - Java后端使用技术：Spring、Spring Boot、MyBatis、MyBatis Plus、Knife4j、Hutool、Sa-Token、Lettuce、POI、Socket
-- Python后端使用技术：FastAPI、Uvicorn、HuggingFace、GPT2.0、TensorFlow、Transformers、PyPDF2、Docx2txt、Tesseract-OCR、PyPDF2、Docx2txt、Docx2pdf、Docx2pdf、PIL、Pytesseract
+- Python后端使用技术：FastAPI、Uvicorn、HuggingFace、GPT2.0、TensorFlow、Transformers、PyPDF2、Docx2txt、Tesseract-OCR、Docx2pdf、Pdf2docx、PIL、Pytesseract
 - Java后端(VAF-CORE)端口：9090
 - 响应代码：198错误、199失败、200成功、201权限不足
 - Python后端
@@ -94,6 +94,16 @@
 ##### 前端程序
 - 环境：Node、Vue3.0
 - Web前端使用技术：Element-plus、Axios、Vue-router、Vuex、iconfont
+- 前端端口：8080
+
+##### 本地复现
+- 准备环境
+- 启动redis、启动mysql
+- 导入数据库结构
+- 引入java后端的maven依赖，配置数据库信息，启动SpringBoot后端（可以访问/doc.html查看swagger2文档）
+- 启动多个Python后端（第一次启动需要很长时间和好的网络环境下载AI模型）
+- 启动Vue前端
+- 前往localhost:8080进行测试
 
 ##### 可改进的地方
 - 内容检索的时候，可以使用多线程进行并发操作，还可以在前面页检测到就直接返回，不用等待所有的文件都检索完毕
