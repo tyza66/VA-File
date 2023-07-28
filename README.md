@@ -100,7 +100,7 @@
 - 准备环境
 - 启动redis、启动mysql
 - 导入数据库结构
-- 引入java后端的maven依赖，配置数据库信息，启动SpringBoot后端（可以访问/doc.html查看swagger2文档）
+- 引入Java后端的maven依赖，配置数据库信息，启动SpringBoot后端（可以访问/doc.html查看swagger2文档）
 - 启动多个Python后端（第一次启动需要很长时间和好的网络环境下载AI模型）
 - 启动Vue前端
 - 前往localhost:8080进行测试
