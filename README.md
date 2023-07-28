@@ -82,7 +82,7 @@
 
 ##### 后端程序
 - 环境：Java8、MySQL、Redis、Docker、Redis
-- Java后端使用技术：Spring、Spring Boot、MyBatis、MyBatis Plus、Knife4j、Hutool、Sa-Token、Lettuce、POI、Socket
+- Java后端使用技术：Spring、Spring Boot、MyBatis、MyBatis Plus、Knife4j、Hutool、Sa-Token、Lettuce、POI、WebSocket
 - Python后端使用技术：FastAPI、Uvicorn、HuggingFace、GPT2.0、TensorFlow、Transformers、PyPDF2、Docx2txt、Tesseract-OCR、Docx2pdf、Pdf2docx、PIL、Pytesseract
 - Java后端(VAF-CORE)端口：9090
 - 响应代码：198错误、199失败、200成功、201权限不足
