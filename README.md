@@ -95,7 +95,7 @@
 
 ##### 前端程序
 - 环境：Node、Vue3.0
-- Web前端使用技术：Element-plus、Axios、Vue-router、Vuex、iconfont
+- Web前端使用技术：Element-plus、Axios、Vue-router、Vuex、Iconfont
 - 前端端口：8080
 
 ##### 本地复现
