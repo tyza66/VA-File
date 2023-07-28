@@ -7,7 +7,7 @@ import uvicorn
 question_answerer = pipeline('question-answering')
 #文本生成
 textGenerator = pipeline("text-generation")
-# 摘要提取
+#摘要提取
 summarizer = pipeline("summarization")
 
 app = FastAPI(title="VAF-MIND0")

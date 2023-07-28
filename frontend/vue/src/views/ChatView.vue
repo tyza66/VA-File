@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="header">
+    <div class="header chat" style="heigth:40px;">
       <h2 style="text-align:center;line-height:40px;">内部聊天&文件栈</h2>
     </div>
     <div class="left">
@@ -153,6 +153,11 @@
   height: 450px;
   background-color: #f5f5f5;
   overflow: auto;
+}
+
+
+.chat{
+  height: 40px !important;
 }
 </style>
 
