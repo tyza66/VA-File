@@ -9,7 +9,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 @MapperScan("com.tyza66.vfm_core.mapper")
 @EnableWebSocket
 public class  VfmCoreApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(VfmCoreApplication.class, args);
     }
