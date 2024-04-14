@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.tyza66.vfm_core.component.DingBotActiveCode;
 import com.tyza66.vfm_core.pojo.VfmUser;
 import com.tyza66.vfm_core.service.VfmUserServer;
 import com.tyza66.vfm_core.service.impl.VfmUserServerImpl;
@@ -11,6 +12,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 /**
  * Author: tyza66
@@ -25,6 +28,9 @@ public class VfmUserController {
 
     @Autowired
     private VfmUserServer vfmUserServer;
+
+    @Autowired
+    private DingBotActiveCode dingBotActiveCode;
 
     @ApiOperation("用户登录")
     @PostMapping("/login")
@@ -62,16 +68,16 @@ public class VfmUserController {
     @PostMapping("/register")
     public JSON register(@RequestBody VfmUser user) {
         JSONObject obj = JSONUtil.createObj();
-        if(StpUtil.isLogin()){
+        if (StpUtil.isLogin()) {
             Boolean user1 = vfmUserServer.register(user.getVfmuUsername(), user.getVfmuPassword(), (VfmUser) StpUtil.getSession().get("user"));
-            if (user1){
+            if (user1) {
                 obj.set("code", 200);
                 obj.set("msg", "注册成功");
-            }else{
+            } else {
                 obj.set("code", 199);
                 obj.set("msg", "注册失败");
             }
-        }else{
+        } else {
             obj.set("code", 201);
             obj.set("msg", "请先登录");
         }
@@ -151,6 +157,21 @@ public class VfmUserController {
         } else {
             obj.set("code", 201);
             obj.set("msg", "请先登录");
+        }
+        return obj;
+    }
+
+    @ApiOperation("检查动态码")
+    @GetMapping("/checkCode")
+    public JSON checkCode(@RequestParam String code) {
+        JSONObject obj = JSONUtil.createObj();
+        boolean aBoolean = Objects.equals(dingBotActiveCode.getActiveCode(), code);
+        if (aBoolean) {
+            obj.set("code", 200);
+            obj.set("msg", "验证成功");
+        } else {
+            obj.set("code", 199);
+            obj.set("msg", "动态码错误");
         }
         return obj;
     }

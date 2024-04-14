@@ -85,37 +85,42 @@ export default {
         ElMessage.error('请输入动态码')
         return
       }
-      if (this.form.proxyCode != 96) {
-        ElMessage({
-          message: '状态码不正确',
-          type: 'error'
-        })
-        return
-      }
-      request.post('/user/login',
-        {
-          "vfmuUsername": this.form.username,
-          "vfmuPassword": this.form.password
-        }).then(res => {
-          if (res.code == 200) {
-            this.setCookie("satoken", res.token);
-            ElMessage({
-              message: '登录成功,1秒后跳转',
-              type: 'success'
+      request.get('/user/checkCode', {
+        params: {
+          "code": this.form.proxyCode
+        }
+      }).then(res => {
+        if (res.code == 200) {
+          request.post('/user/login',
+            {
+              "vfmuUsername": this.form.username,
+              "vfmuPassword": this.form.password
+            }).then(res => {
+              if (res.code == 200) {
+                this.setCookie("satoken", res.token);
+                ElMessage({
+                  message: '登录成功,1秒后跳转',
+                  type: 'success'
+                })
+                setTimeout(
+                  () => {
+                    this.$router.push('/home')
+                  }, 1000)
+              } else {
+                ElMessage({
+                  message: res.msg,
+                  type: 'error'
+                })
+              }
+            }).catch(err => {
+              console.log(err);
             })
-            setTimeout(
-              () => {
-                this.$router.push('/home')
-              }, 1000)
-          } else {
-            ElMessage({
-              message: res.msg,
-              type: 'error'
-            })
-          }
-        }).catch(err => {
-          console.log(err);
-        })
+        } else {
+          ElMessage.error(res.msg)
+        }
+      }).catch(err => {
+        console.log(err);
+      })
     }, setCookie(key, value) {
       // 构建新的cookie字符串  
       var cookie = key + '=' + value + ';';
