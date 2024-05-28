@@ -29,7 +29,7 @@ public class DingDingPusher {
 
     @PostConstruct
     public void init() {
-        sendMessageMarkdown("启动信息", dingName + "已启动");
+        //sendMessageMarkdown("启动信息", dingName + "已启动");
     }
 
     @SneakyThrows
